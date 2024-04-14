@@ -1,6 +1,7 @@
 package main
 
 import (
+	"blog/global"
 	"fmt"
 
 	"github.com/gin-gonic/gin"
@@ -17,6 +18,8 @@ func main() {
 			"message": "welcome to goBlog!",
 		})
 	})
+
+	fmt.Printf("values: %s\n", global.ServerSetting)
 
 	// 运行服务
 	err := r.Run(":8080")

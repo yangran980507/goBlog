@@ -1,0 +1,18 @@
+#用于git push 的配置项
+
+
+Server: #服务配置
+  HttpPort:  #server监听端口:8080
+  Env:  #运行环境 local/production/test
+  URL:  #快捷生成链接
+
+MySQL: #mysql配置
+  Host:  #主机号
+  Port:  #端口号
+  DBName: goblog #数据库名称
+  UserName:  #用户登陆名
+  Password:  #登陆密码
+
+Redis: #redis配置
+  Host:  #主机号
+  Port:  #端口号
