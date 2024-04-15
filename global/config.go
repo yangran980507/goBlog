@@ -1,3 +1,4 @@
+// Package global 存放全局配置参数对象
 package global
 
 import (
@@ -5,8 +6,10 @@ import (
 	"log"
 )
 
+// ServerSetting 全局变量
 var (
 	ServerSetting *config.ServerSection
+	MysqlSetting  *config.MysqlSection
 )
 
 func init() {
@@ -17,14 +20,20 @@ func init() {
 }
 
 func setupSetting() error {
+
+	// 新建 viper 实例
 	setting, err := config.NewSetting()
 	if err != nil {
 		return err
 	}
 
-	//ServerSetting.Values = make(map[string]interface{})
-
+	// 调用 ReadSection 方法将配置文件写入全局变量中
 	err = setting.ReadSection("Server", &ServerSetting)
+	if err != nil {
+		return err
+	}
+
+	err = setting.ReadSection("MySQL", &MysqlSetting)
 	if err != nil {
 		return err
 	}

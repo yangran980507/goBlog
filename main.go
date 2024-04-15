@@ -19,10 +19,8 @@ func main() {
 		})
 	})
 
-	fmt.Printf("values: %s\n", global.ServerSetting)
-
 	// 运行服务
-	err := r.Run(":8080")
+	err := r.Run(":" + global.ServerSetting.HttpPort)
 	if err != nil {
 		fmt.Println(err.Error())
 	}
