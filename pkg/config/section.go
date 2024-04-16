@@ -9,7 +9,7 @@ type ServerSection struct {
 	URL      string
 }
 
-// MysqlSection 存放 mysql 配置
+// MysqlSection 存放 mysql 配置类
 type MysqlSection struct {
 	Host            string
 	Port            string

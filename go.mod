@@ -6,6 +6,10 @@ require (
 	github.com/gin-gonic/gin v1.9.1
 	github.com/mgutz/ansi v0.0.0-20200706080929-d51e80ef957d
 	github.com/spf13/viper v1.18.2
+	go.uber.org/zap v1.27.0
+	gopkg.in/natefinch/lumberjack.v2 v2.2.1
+	gorm.io/driver/mysql v1.5.6
+	gorm.io/gorm v1.25.9
 )
 
 require (
@@ -51,6 +55,4 @@ require (
 	google.golang.org/protobuf v1.31.0 // indirect
 	gopkg.in/ini.v1 v1.67.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
-	gorm.io/driver/mysql v1.5.6 // indirect
-	gorm.io/gorm v1.25.9 // indirect
 )

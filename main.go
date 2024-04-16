@@ -2,11 +2,17 @@ package main
 
 import (
 	"blog/global"
+	"blog/global/logger"
+	"blog/global/mysql"
 	"fmt"
 
 	"github.com/gin-gonic/gin"
 )
 
+func init() {
+	mysql.InitializeDB()
+	logger.InitializeLog()
+}
 func main() {
 
 	// 初始化 gin 实例

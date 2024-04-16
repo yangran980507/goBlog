@@ -1,7 +1,8 @@
-// Package global 存放全局 gorm.db 对象
-package global
+// Package mysql 存放 gorm.db 对象
+package mysql
 
 import (
+	"blog/global"
 	"database/sql"
 	"fmt"
 	"gorm.io/driver/mysql"
@@ -15,7 +16,7 @@ import (
 var DB *gorm.DB
 var SqlDB *sql.DB
 
-func init() {
+func InitializeDB() {
 	Connect(newDBConfig(), gormlogger.Default.LogMode(gormlogger.Info))
 }
 
@@ -38,23 +39,23 @@ func Connect(dbConfig gorm.Dialector, _logger gormlogger.Interface) {
 	}
 
 	// 设置最大连接数
-	SqlDB.SetMaxOpenConns(MysqlSetting.MaxOpenConns)
+	SqlDB.SetMaxOpenConns(global.MysqlSetting.MaxOpenConns)
 
 	// 设置最大空闲连接数
-	SqlDB.SetMaxIdleConns(MysqlSetting.MaxIdleConns)
+	SqlDB.SetMaxIdleConns(global.MysqlSetting.MaxIdleConns)
 
 	// 设置连接过期时间
-	SqlDB.SetConnMaxLifetime(MysqlSetting.ConnMaxLifeTime * time.Second)
+	SqlDB.SetConnMaxLifetime(global.MysqlSetting.ConnMaxLifeTime * time.Second)
 }
 
 func newDBConfig() gorm.Dialector {
 	dsn := fmt.Sprintf("%v:%v@tcp(%v:%v)/%v?"+
 		"charset=utf8mb4&parseTime=True&multiStatements=true&loc=Local",
-		MysqlSetting.UserName,
-		MysqlSetting.Password,
-		MysqlSetting.Host,
-		MysqlSetting.Port,
-		MysqlSetting.DBName)
+		global.MysqlSetting.UserName,
+		global.MysqlSetting.Password,
+		global.MysqlSetting.Host,
+		global.MysqlSetting.Port,
+		global.MysqlSetting.DBName)
 
 	return mysql.New(mysql.Config{
 		DSN: dsn,

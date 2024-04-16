@@ -3,6 +3,7 @@ package global
 
 import (
 	"blog/pkg/config"
+	"blog/pkg/logger"
 	"log"
 )
 
@@ -10,6 +11,7 @@ import (
 var (
 	ServerSetting *config.ServerSection
 	MysqlSetting  *config.MysqlSection
+	LogSetting    *logger.LogSection
 )
 
 func init() {
@@ -28,12 +30,20 @@ func setupSetting() error {
 	}
 
 	// 调用 ReadSection 方法将配置文件写入全局变量中
+	// 服务端配置
 	err = setting.ReadSection("Server", &ServerSetting)
 	if err != nil {
 		return err
 	}
 
+	// mysql配置
 	err = setting.ReadSection("MySQL", &MysqlSetting)
+	if err != nil {
+		return err
+	}
+
+	// 日志配置
+	err = setting.ReadSection("Logger", &LogSetting)
 	if err != nil {
 		return err
 	}
