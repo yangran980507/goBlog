@@ -4,6 +4,8 @@ import (
 	"blog/global"
 	"blog/global/logger"
 	"blog/global/mysql"
+	"blog/pkg/errcode"
+	"blog/pkg/response"
 	"fmt"
 
 	"github.com/gin-gonic/gin"
@@ -11,6 +13,7 @@ import (
 
 func init() {
 	mysql.InitializeDB()
+	errcode.InitializeErrorCode()
 	logger.InitializeLog()
 }
 func main() {
@@ -20,9 +23,10 @@ func main() {
 
 	// 设置路由
 	r.GET("/", func(c *gin.Context) {
-		c.JSON(200, gin.H{
-			"message": "welcome to goBlog!",
-		})
+		response.NewResponse(c, errcode.ErrTest.ParseCode()).WithResponse(gin.H{
+			"name": "yangran",
+			"age":  25,
+		}, "test01", "123456789")
 	})
 
 	// 运行服务

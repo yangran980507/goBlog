@@ -7,26 +7,26 @@ import (
 )
 
 type Coder interface {
-	Code() int
+	Code() CodeInt
 	Message() string
 	HTTPStatus() int
 	Details() []string
 }
 
 type ErrorCode struct {
-	code       int
+	code       CodeInt
 	msg        string
 	details    []string
 	httpStatus int
 }
 
-// 存放全局错误码
-var codes map[int]Coder
+// Codes 存放全局错误码
+var Codes = map[CodeInt]Coder{}
 
 //var codeMux sync.Mutex
 
 // Code 返回自定义错误码
-func (e *ErrorCode) Code() int {
+func (e *ErrorCode) Code() CodeInt {
 	return e.code
 }
 
@@ -46,18 +46,15 @@ func (e *ErrorCode) HTTPStatus() int {
 }
 
 // WithDetails 添加错误细节
-func (e *ErrorCode) WithDetails(details ...string) {
-	//e.details = make([]string, 0)
-	for _, d := range details {
-		e.details = append(e.details, d)
-	}
+func (e *ErrorCode) withDetails(detail string) {
+	e.details = append(e.details, detail)
 }
 
-func (e *ErrorCode) ParseCode() Coder {
-	if v, ok := codes[e.Code()]; ok {
+func (c CodeInt) ParseCode() Coder {
+	if v, ok := Codes[c]; ok {
 		return v
 	}
-	return codes[ErrUnknown]
+	return Codes[ErrUnknown]
 }
 
 func (e *ErrorCode) Error() string {
@@ -65,7 +62,7 @@ func (e *ErrorCode) Error() string {
 }
 
 // Register 添加错误码
-func Register(code int, httpStatus int, message string, details ...string) {
+func Register(code CodeInt, httpStatus int, message string, details ...string) {
 
 	coder := &ErrorCode{
 		code:       code,
@@ -73,15 +70,16 @@ func Register(code int, httpStatus int, message string, details ...string) {
 		msg:        message,
 	}
 
-	if len(details[0]) > 0 {
-		coder.WithDetails(details...)
+	for _, detail := range details {
+		coder.withDetails(detail)
 	}
 
-	if _, ok := codes[coder.Code()]; ok {
+	if _, ok := Codes[coder.Code()]; ok {
 		panic(fmt.Sprintf("err_code: %d 已经存在", coder.Code()))
 	}
 
 	//codeMux.Lock()
 	//defer codeMux.Unlock()
-	codes[coder.Code()] = coder
+	Codes[coder.Code()] = coder
+
 }
