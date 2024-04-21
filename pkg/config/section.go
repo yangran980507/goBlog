@@ -4,9 +4,10 @@ import "time"
 
 // ServerSection 存放服务配置类
 type ServerSection struct {
-	HttpPort string
-	Env      string
-	URL      string
+	HttpPort     string
+	RunMode      string
+	ReadTimeOut  time.Duration
+	WriteTimeOut time.Duration
 }
 
 // MysqlSection 存放 mysql 配置类

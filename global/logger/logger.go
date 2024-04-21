@@ -10,6 +10,10 @@ import (
 var Logger *zap.Logger
 
 func InitializeLog() {
+	setupLogger()
+}
+
+func setupLogger() {
 	//获取日志写入介质
 	writeSyncer := global.LogSetting.GetLogWriter()
 

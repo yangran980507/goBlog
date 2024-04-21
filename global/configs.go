@@ -14,7 +14,7 @@ var (
 	LogSetting    *logger.LogSection
 )
 
-func init() {
+func InitializeConf() {
 	err := setupSetting()
 	if err != nil {
 		log.Fatalf("init.setupSetting failed,err: %s", err.Error())

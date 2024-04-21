@@ -5,6 +5,7 @@ go 1.22.0
 require (
 	github.com/gin-gonic/gin v1.9.1
 	github.com/mgutz/ansi v0.0.0-20200706080929-d51e80ef957d
+	github.com/spf13/cobra v1.8.0
 	github.com/spf13/viper v1.18.2
 	go.uber.org/zap v1.27.0
 	gopkg.in/natefinch/lumberjack.v2 v2.2.1
@@ -24,6 +25,7 @@ require (
 	github.com/go-sql-driver/mysql v1.7.0 // indirect
 	github.com/goccy/go-json v0.10.2 // indirect
 	github.com/hashicorp/hcl v1.0.0 // indirect
+	github.com/inconshreveable/mousetrap v1.1.0 // indirect
 	github.com/jinzhu/inflection v1.0.0 // indirect
 	github.com/jinzhu/now v1.1.5 // indirect
 	github.com/json-iterator/go v1.1.12 // indirect
