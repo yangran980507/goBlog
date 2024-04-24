@@ -2,9 +2,9 @@
 package router
 
 import (
+	"blog/internal/server/routes"
 	"blog/pkg/errcode"
 	"blog/pkg/response"
-	"blog/routes"
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"os"
@@ -13,7 +13,7 @@ import (
 
 func SetupRouter(router *gin.Engine) {
 	// 匹配模板
-	router.LoadHTMLGlob("templates/**/*")
+	router.LoadHTMLGlob("templates/**/*.html")
 
 	// 配置静态文件加载
 	//staticAccess(router)
@@ -53,7 +53,7 @@ func setupNoRoute(router *gin.Engine) {
 		// 获取请求头
 		acceptString := c.Request.Header.Get("Accept")
 		// 如果请求页面是 text/user_view 的话
-		if strings.Contains(acceptString, "text/html") {
+		if strings.Contains(acceptString, "text/html_controller") {
 			c.String(404, "页面返回404")
 		} else {
 			response.NewResponse(c, errcode.ErrNotFound.ParseCode()).WithResponse()
