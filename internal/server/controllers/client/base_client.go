@@ -1,3 +1,3 @@
-package v1
+package client
 
 type BaseAPIController struct{}
