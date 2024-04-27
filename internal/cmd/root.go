@@ -3,10 +3,10 @@ package cmd
 
 import (
 	"blog/global"
+	"blog/global/database"
 	"blog/global/logger"
 	"blog/pkg/console"
 	"blog/pkg/errcode"
-	"blog/pkg/mysql"
 	"fmt"
 	"github.com/spf13/cobra"
 	"os"
@@ -21,7 +21,7 @@ var RootCmd = &cobra.Command{
 		// 初始化配置变量
 		global.InitializeConf()
 		// 初始化数据库连接
-		mysql.InitializeDB()
+		database.InitializeDB()
 		// 初始化业务错误码
 		errcode.InitializeErrorCode()
 		// 初始化日志

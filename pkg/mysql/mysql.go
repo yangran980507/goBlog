@@ -3,9 +3,9 @@ package mysql
 
 import (
 	"blog/global"
+	"blog/internal/server/models/user"
 	"database/sql"
 	"fmt"
-	"gorm.io/driver/mysql"
 	"time"
 
 	"gorm.io/gorm"
@@ -15,10 +15,6 @@ import (
 // DB 数据库对象
 var DB *gorm.DB
 var SqlDB *sql.DB
-
-func InitializeDB() {
-	Connect(newDBConfig(), gormlogger.Default.LogMode(gormlogger.Info))
-}
 
 // Connect 连接数据库
 func Connect(dbConfig gorm.Dialector, _logger gormlogger.Interface) {
@@ -46,18 +42,6 @@ func Connect(dbConfig gorm.Dialector, _logger gormlogger.Interface) {
 
 	// 设置连接过期时间
 	SqlDB.SetConnMaxLifetime(global.MysqlSetting.ConnMaxLifeTime * time.Second)
-}
 
-func newDBConfig() gorm.Dialector {
-	dsn := fmt.Sprintf("%v:%v@tcp(%v:%v)/%v?"+
-		"charset=utf8mb4&parseTime=True&multiStatements=true&loc=Local",
-		global.MysqlSetting.UserName,
-		global.MysqlSetting.Password,
-		global.MysqlSetting.Host,
-		global.MysqlSetting.Port,
-		global.MysqlSetting.DBName)
-
-	return mysql.New(mysql.Config{
-		DSN: dsn,
-	})
+	DB.AutoMigrate(&user.User{})
 }
