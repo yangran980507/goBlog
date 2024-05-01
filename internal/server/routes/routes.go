@@ -2,6 +2,7 @@
 package routes
 
 import (
+	"blog/internal/server/controllers/api_controller/signup_controller"
 	"blog/internal/server/controllers/html_controller"
 	"github.com/gin-gonic/gin"
 )
@@ -57,17 +58,15 @@ func RegisterAPIRoutes(router *gin.Engine) {
 	}
 
 	// 接口路由组
-	/*apiGroup := router.Group("/api")
+	apiGroup := router.Group("/api")
 	{
-
-
 		// 授权相关路由组
-		auth := user.Group("/auth")
+		auth := apiGroup.Group("/auth")
 		{
 			// 用户注册控制实例
-			sc := new(authContr.SignupController)
+			sc := new(signup_controller.SignupController)
 			// 获取用户注册页面
-			auth.GET("/signup", sc.SignupPage)
+			auth.POST("/signup", sc.SignupUser)
 		}
-	}*/
+	}
 }

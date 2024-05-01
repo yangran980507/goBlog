@@ -22,8 +22,6 @@ const (
 
 	// ErrNotFound / http.StatusNotFound / Route Did Not Fund / 404
 	ErrNotFound
-
-	ErrTest
 )
 
 func InitializeErrorCode() {
@@ -33,5 +31,4 @@ func InitializeErrorCode() {
 	Register(ErrValidation, 400, "Validation Failed")
 	Register(ErrTokenInvalid, 401, "Authorization Failed")
 	Register(ErrNotFound, 404, "Route Did Not Fund")
-	Register(ErrTest, 200, "Route Did Not Fund", "this is a test", "don't carry")
 }

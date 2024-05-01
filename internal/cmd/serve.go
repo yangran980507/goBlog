@@ -3,7 +3,7 @@ package cmd
 
 import (
 	"blog/global"
-	blogRouter "blog/global/router"
+	blogRouter "blog/initialize/router"
 	"blog/pkg/console"
 	"fmt"
 	"github.com/gin-gonic/gin"

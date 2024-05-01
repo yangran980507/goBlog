@@ -1,31 +1,29 @@
-// Package mysql 存放 gorm.db 对象
+// Package mysql 数据库对象
 package mysql
 
 import (
-	"blog/global"
-	"blog/internal/server/models/user"
+	"blog/pkg/console"
 	"database/sql"
 	"fmt"
-	"time"
+	gormlogger "gorm.io/gorm/logger"
 
 	"gorm.io/gorm"
-	gormlogger "gorm.io/gorm/logger"
 )
 
 // DB 数据库对象
 var DB *gorm.DB
 var SqlDB *sql.DB
 
-// Connect 连接数据库
-func Connect(dbConfig gorm.Dialector, _logger gormlogger.Interface) {
+// Connect 数据库连接设置
+func Connect(dbConfig gorm.Dialector) {
 
 	var err error
 	DB, err = gorm.Open(dbConfig, &gorm.Config{
-		Logger: _logger,
+		Logger: gormlogger.Default.LogMode(gormlogger.Info),
 	})
 	// 错误处理
 	if err != nil {
-		fmt.Println(err.Error())
+		console.Exit(err.Error())
 	}
 
 	// 获取 sql.db
@@ -34,14 +32,4 @@ func Connect(dbConfig gorm.Dialector, _logger gormlogger.Interface) {
 		fmt.Println(err.Error())
 	}
 
-	// 设置最大连接数
-	SqlDB.SetMaxOpenConns(global.MysqlSetting.MaxOpenConns)
-
-	// 设置最大空闲连接数
-	SqlDB.SetMaxIdleConns(global.MysqlSetting.MaxIdleConns)
-
-	// 设置连接过期时间
-	SqlDB.SetConnMaxLifetime(global.MysqlSetting.ConnMaxLifeTime * time.Second)
-
-	DB.AutoMigrate(&user.User{})
 }

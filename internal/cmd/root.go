@@ -3,8 +3,8 @@ package cmd
 
 import (
 	"blog/global"
-	"blog/global/database"
-	"blog/global/logger"
+	"blog/initialize/database"
+	"blog/initialize/logger"
 	"blog/pkg/console"
 	"blog/pkg/errcode"
 	"fmt"

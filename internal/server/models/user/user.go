@@ -1,7 +1,10 @@
 // Package user 用户模型
 package user
 
-import "blog/internal/server/models"
+import (
+	"blog/internal/server/models"
+	"blog/pkg/mysql"
+)
 
 type User struct {
 	// 用户编号
@@ -11,15 +14,13 @@ type User struct {
 	// 真实名
 	TrueName string `json:"true_name,omitempty"`
 	// 密码
-	PassWord string `json:"pass_word,omitempty"`
+	PassWord string `json:"-"`
 	// 地址
 	Address string `json:"address,omitempty"`
 	// 邮编
 	PostCode string `json:"post_code,omitempty"`
 	// 电话号码
-	Phone string `json:"phone,omitempty"`
-	// 邮箱
-	Email string `json:"email"`
+	Phone string `json:"-"`
 	// 账号是否可用
 	Freeze bool `json:"freeze"`
 	// 用户身份 1：用户；2：管理
@@ -28,4 +29,9 @@ type User struct {
 	Grade int `json:"grade"`
 	// 消费金额
 	Amount float64 `json:"amount"`
+}
+
+// Create 增加数据
+func (userModel *User) Create() {
+	mysql.DB.Create(&userModel)
 }
