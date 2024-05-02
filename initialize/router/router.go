@@ -5,18 +5,13 @@ import (
 	"blog/internal/server/routes"
 	"blog/pkg/errcode"
 	"blog/pkg/response"
-	"fmt"
 	"github.com/gin-gonic/gin"
-	"os"
 	"strings"
 )
 
 func SetupRouter(router *gin.Engine) {
 	// 匹配模板
 	router.LoadHTMLGlob("templates/**/*.html")
-
-	// 配置静态文件加载
-	//staticAccess(router)
 
 	// 注册全局中间件
 	setupMiddlewares(router)
@@ -26,16 +21,6 @@ func SetupRouter(router *gin.Engine) {
 
 	// 注册 404 路由
 	setupNoRoute(router)
-}
-
-// 访问静态资源
-func staticAccess(router *gin.Engine) {
-	// 获取绝对路径
-	path, _ := os.Getwd()
-	//定义静态文件路径
-	fmt.Printf("this is %s\n", path)
-	//router.Static("assets", path+"/assets/css")
-	router.Static("/assets", path+"/assets")
 }
 
 // 全局中间件

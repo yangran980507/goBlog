@@ -1,7 +1,12 @@
 // Package logger 存放 logger 相关方法
 package logger
 
-import "go.uber.org/zap"
+import (
+	"go.uber.org/zap"
+)
+
+// Logger 全局 Logger 对象
+var Logger *zap.Logger
 
 // LogIf 发生 error 时记录 error 等级的日志
 func LogIf(err error) {

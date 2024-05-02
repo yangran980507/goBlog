@@ -2,6 +2,8 @@
 package logger
 
 import (
+	"blog/global"
+	"blog/pkg/config"
 	"fmt"
 	"os"
 	"strings"
@@ -10,6 +12,16 @@ import (
 	"go.uber.org/zap/zapcore"
 	"gopkg.in/natefinch/lumberjack.v2"
 )
+
+type LogSection struct {
+	*config.LogSection
+}
+
+type LogSetting interface {
+	GetLogWriter() zapcore.WriteSyncer
+	SetLogLevel() *zapcore.Level
+	SetLogEncoder() zapcore.Encoder
+}
 
 // GetLogWriter 获取日志写入介质
 func (ls *LogSection) GetLogWriter() zapcore.WriteSyncer {
@@ -31,10 +43,9 @@ func (ls *LogSection) GetLogWriter() zapcore.WriteSyncer {
 
 	// 返回日志写入介质
 	// 本地环境输出日志到文件和终端
-	if ls.Env == "local" {
+	if global.AppSetting.Env == "local" {
 		return zapcore.NewMultiWriteSyncer(
-			zapcore.AddSync(lumberJackLogger),
-			zapcore.AddSync(os.Stdout))
+			zapcore.AddSync(lumberJackLogger), zapcore.AddSync(os.Stdout))
 	} else {
 		// 其他环境输出日志到文件
 		return zapcore.AddSync(lumberJackLogger)

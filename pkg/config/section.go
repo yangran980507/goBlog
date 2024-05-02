@@ -22,6 +22,24 @@ type MysqlSection struct {
 	ConnMaxLifeTime time.Duration
 }
 
+// AppSection 存放 App 配置类
+type AppSection struct {
+	Name          string
+	Env           string
+	URL           string
+	JWTExpireTime time.Duration
+}
+
+// LogSection 存放日志配置类
+type LogSection struct {
+	LogType   string
+	LogLevel  string
+	FileName  string
+	MaxSize   int
+	MaxBackup int
+	MaxAge    int
+}
+
 // RedisSection 存放 redis 配置
 type RedisSection struct {
 	//

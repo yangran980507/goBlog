@@ -3,21 +3,21 @@ package global
 
 import (
 	"blog/pkg/config"
-	"blog/pkg/logger"
-	"log"
+	"blog/pkg/console"
 )
 
 // ServerSetting 全局变量
 var (
 	ServerSetting *config.ServerSection
 	MysqlSetting  *config.MysqlSection
-	LogSetting    *logger.LogSection
+	LogSetting    *config.LogSection
+	AppSetting    *config.AppSection
 )
 
 func InitializeConf() {
 	err := setupSetting()
 	if err != nil {
-		log.Fatalf("init.setupSetting failed,err: %s", err.Error())
+		console.Exit("init.setupSetting failed,err:" + err.Error())
 	}
 }
 
@@ -47,5 +47,12 @@ func setupSetting() error {
 	if err != nil {
 		return err
 	}
+
+	// 应用配置
+	err = setting.ReadSection("App", &AppSetting)
+	if err != nil {
+		return err
+	}
+
 	return nil
 }

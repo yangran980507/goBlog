@@ -14,9 +14,9 @@ func NewSetting() (*Setting, error) {
 
 	vp := viper.New()
 
-	vp.SetConfigName("config") //指定配置文件名
-
 	vp.AddConfigPath("configs/") //添加配置文件路径
+
+	vp.SetConfigName("config") //指定配置文件名
 
 	vp.SetConfigType("yaml") //指定配置文件类型
 

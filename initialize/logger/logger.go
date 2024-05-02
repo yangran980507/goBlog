@@ -3,31 +3,34 @@ package logger
 
 import (
 	"blog/global"
+	loggerpkg "blog/pkg/logger"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
 )
-
-var Logger *zap.Logger
 
 func InitializeLog() {
 	setupLogger()
 }
 
 func setupLogger() {
+
+	logSetting := loggerpkg.LogSection{
+		LogSection: global.LogSetting,
+	}
 	//获取日志写入介质
-	writeSyncer := global.LogSetting.GetLogWriter()
+	writeSyncer := logSetting.GetLogWriter()
 
 	//设置日志级别
-	level := global.LogSetting.SetLogLevel()
+	level := logSetting.SetLogLevel()
 
 	//设置日志存储格式
-	encoder := global.LogSetting.SetLogEncoder()
+	encoder := logSetting.SetLogEncoder()
 
 	//初始化 core
 	core := zapcore.NewCore(encoder, writeSyncer, level)
 
 	//初始化 Logger
-	Logger = zap.New(
+	loggerpkg.Logger = zap.New(
 		core,
 		zap.AddCaller(),
 		zap.AddCallerSkip(1),
@@ -35,5 +38,5 @@ func setupLogger() {
 	)
 
 	//替换全局 Logger
-	zap.ReplaceGlobals(Logger)
+	zap.ReplaceGlobals(loggerpkg.Logger)
 }

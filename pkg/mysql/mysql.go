@@ -19,7 +19,7 @@ func Connect(dbConfig gorm.Dialector) {
 
 	var err error
 	DB, err = gorm.Open(dbConfig, &gorm.Config{
-		Logger: gormlogger.Default.LogMode(gormlogger.Info),
+		Logger: gormlogger.Default.LogMode(gormlogger.Error),
 	})
 	// 错误处理
 	if err != nil {

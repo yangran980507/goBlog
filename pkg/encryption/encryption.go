@@ -2,7 +2,7 @@
 package encryption
 
 import (
-	"blog/initialize/logger"
+	"blog/pkg/logger"
 	"golang.org/x/crypto/bcrypt"
 )
 

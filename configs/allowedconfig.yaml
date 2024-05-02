@@ -3,16 +3,34 @@
 
 Server: #服务配置
   HttpPort:  #server监听端口:8080
-  Env:  #运行环境 local/production/test
-  URL:  #快捷生成链接
+  ReadTimeOut:
+  WriteTimeOut:
+  RunMode:  #debug/release/production
 
 MySQL: #mysql配置
   Host:  #主机号
   Port:  #端口号
-  DBName: goblog #数据库名称
+  DBName:  #数据库名称
   UserName:  #用户登陆名
   Password:  #登陆密码
+  MaxOpenConns:  #最大连接数
+  MaxIdleConns:  #最大空闲连接数
+  ConnMaxLifeTime:  #连接过期时间
 
 Redis: #redis配置
   Host:  #主机号
   Port:  #端口号
+
+Logger: #logger配置
+  LogType:  #配置按日期输出日志
+  LogLevel:  #配置输出日志等级
+  FileName:  #
+  MaxSize:  #配置单条日志保存最大内存
+  MaxBackup:  #配置最大保存文件数
+  MaxAge:  #配置过期时间
+
+App: #app配置
+  Name:  #应用名称
+  Env:  #应用运行环境 local/production/test
+  URL:  #快捷生成链接
+  JWTExpireTime:  #应用认证过期时间
