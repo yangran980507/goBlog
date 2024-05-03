@@ -5,6 +5,7 @@ import (
 	"blog/internal/server/models/user"
 	"blog/internal/server/requests"
 	"blog/pkg/errcode"
+	"blog/pkg/jwt"
 	"blog/pkg/response"
 	"github.com/gin-gonic/gin"
 )
@@ -20,17 +21,26 @@ func (sc *SignupController) SignupUser(c *gin.Context) {
 		return
 	}
 
-	userCreated := user.User{
+	userModel := user.User{
 		LoginName: request.LoginName,
 		TrueName:  request.TrueName,
 		PassWord:  request.PassWord,
 		Phone:     request.Phone,
 	}
-	userCreated.Create()
+	userModel.Create()
 
-	if userCreated.ID > 0 {
-		response.NewResponse(c, errcode.ErrSuccess.ParseCode()).WithResponse("注册成功")
+	if userModel.ID > 0 {
+		userinfo := jwt.UserInfo{
+			UserID:        userModel.ID,
+			UserLoginName: userModel.LoginName,
+		}
+		token := jwt.NewJWT().IssueToken(userinfo)
+		response.NewResponse(c, errcode.ErrSuccess.ParseCode()).WithResponse(
+			gin.H{
+				"token": token,
+				"data":  userModel,
+			})
 	} else {
-		response.NewResponse(c, errcode.ErrUnknown.ParseCode()).WithResponse("注册失败")
+		response.NewResponse(c, errcode.ErrTokenInvalid.ParseCode()).WithResponse("创建用户失败")
 	}
 }

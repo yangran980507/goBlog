@@ -24,10 +24,11 @@ type MysqlSection struct {
 
 // AppSection 存放 App 配置类
 type AppSection struct {
-	Name          string
-	Env           string
-	URL           string
-	JWTExpireTime time.Duration
+	Name             string
+	Env              string
+	URL              string
+	JWTExpireTime    int64
+	JWTMaxExpireTime int64
 }
 
 // LogSection 存放日志配置类

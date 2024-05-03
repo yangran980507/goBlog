@@ -6,7 +6,7 @@ import (
 	"blog/pkg/console"
 )
 
-// ServerSetting 全局变量
+// 声明配置参数变量
 var (
 	ServerSetting *config.ServerSection
 	MysqlSetting  *config.MysqlSection
