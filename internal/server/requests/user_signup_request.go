@@ -1,4 +1,4 @@
-// Package requests 用户生成请求验证
+// Package requests 用户注册请求验证
 package requests
 
 import (

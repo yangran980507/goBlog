@@ -10,3 +10,9 @@ func IsUserExist(user string) bool {
 		Count(&count)
 	return count > 0
 }
+
+// GetUserInfo 获取用户信息
+func GetUserInfo(loginName string) (userModel User) {
+	mysql.DB.Where("login_name = ?", loginName).First(&userModel)
+	return
+}

@@ -1,4 +1,5 @@
-package signup_controller
+// Package auth 用户注册处理函数
+package auth
 
 import (
 	"blog/internal/server/controllers"
@@ -10,37 +11,48 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+// SignupController 用户注册控制器
 type SignupController struct {
 	controllers.BaseController
 }
 
+// SignupUser 用户注册处理函数
 func (sc *SignupController) SignupUser(c *gin.Context) {
 
+	// 创建验证结构体空值实例
 	request := requests.SignupUserValidation{}
+	// 绑定结构数据到验证结构体中
 	if ok := requests.BindAndValid(c, &request, requests.SignupUserValidate); !ok {
+		// 绑定 && 验证失败
 		return
 	}
 
+	// 创建写数据库结构体实例
 	userModel := user.User{
 		LoginName: request.LoginName,
 		TrueName:  request.TrueName,
 		PassWord:  request.PassWord,
 		Phone:     request.Phone,
 	}
+	// 调用写数据库函数创建数据
 	userModel.Create()
 
 	if userModel.ID > 0 {
+		// 创建 jwt 鉴权结构体实例
 		userinfo := jwt.UserInfo{
 			UserID:        userModel.ID,
 			UserLoginName: userModel.LoginName,
 		}
+		// 签发令牌
 		token := jwt.NewJWT().IssueToken(userinfo)
+		// 返回成功码，令牌及用户数据
 		response.NewResponse(c, errcode.ErrSuccess.ParseCode()).WithResponse(
 			gin.H{
 				"token": token,
-				"data":  userModel,
+				"user":  userModel,
 			})
 	} else {
+		// 创建失败，返回失败信息
 		response.NewResponse(c, errcode.ErrTokenInvalid.ParseCode()).WithResponse("创建用户失败")
 	}
 }

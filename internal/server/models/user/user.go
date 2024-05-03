@@ -3,6 +3,7 @@ package user
 
 import (
 	"blog/internal/server/models"
+	"blog/pkg/encryption"
 	"blog/pkg/mysql"
 )
 
@@ -34,4 +35,9 @@ type User struct {
 // Create 增加数据
 func (userModel *User) Create() {
 	mysql.DB.Create(&userModel)
+}
+
+// ComparePSW 密码比较
+func (userModel *User) ComparePSW(psw string) bool {
+	return encryption.BcryptCheck(psw, userModel.PassWord)
 }
