@@ -34,7 +34,7 @@ func (lc *LoginController) LoginUser(c *gin.Context) {
 	if err != nil {
 		// 登陆失败
 		response.NewResponse(c, errcode.ErrTokenInvalid.ParseCode()).
-			WithResponse("登陆失败," + err.Error())
+			WithResponse("登陆失败:" + err.Error())
 	} else {
 		// 创建 jwt 鉴权结构体实例
 		userinfo := jwt.UserInfo{
@@ -43,6 +43,23 @@ func (lc *LoginController) LoginUser(c *gin.Context) {
 		}
 		// 签发令牌
 		token := jwt.NewJWT().IssueToken(userinfo)
+		// 返回成功码，令牌及用户数据
+		response.NewResponse(c, errcode.ErrSuccess.ParseCode()).WithResponse(
+			gin.H{
+				"user":  userModel,
+				"token": token,
+			})
+	}
+}
+
+// RefreshToken 刷新 Access token
+func (lc *LoginController) RefreshToken(c *gin.Context) {
+	token, err := jwt.NewJWT().RefreshToken(c)
+
+	if err != nil {
+		response.NewResponse(c, errcode.ErrTokenInvalid.ParseCode()).WithResponse(
+			"令牌刷新无效:" + err.Error())
+	} else {
 		// 返回成功码，令牌及用户数据
 		response.NewResponse(c, errcode.ErrSuccess.ParseCode()).WithResponse(
 			gin.H{

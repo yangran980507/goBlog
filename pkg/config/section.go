@@ -27,6 +27,7 @@ type AppSection struct {
 	Name             string
 	Env              string
 	URL              string
+	JWTSecretKey     string
 	JWTExpireTime    int64
 	JWTMaxExpireTime int64
 }

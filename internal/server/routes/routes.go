@@ -71,7 +71,9 @@ func RegisterAPIRoutes(router *gin.Engine) {
 			// 用户登陆控制实例
 			lc := new(authServer.LoginController)
 			// 获取用户注册页面
-			auth.POST("/signin", lc.LoginUser)
+			auth.POST("/login", lc.LoginUser)
+			// 刷新令牌
+			auth.POST("/login/refresh-token", lc.RefreshToken)
 		}
 	}
 }

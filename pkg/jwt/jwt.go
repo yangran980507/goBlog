@@ -4,9 +4,7 @@ package jwt
 import (
 	"blog/global"
 	"blog/pkg/app"
-	"blog/pkg/console"
 	"blog/pkg/logger"
-	"crypto/rand"
 	"errors"
 	"github.com/gin-gonic/gin"
 	jwtpkg "github.com/golang-jwt/jwt/v5"
@@ -16,7 +14,8 @@ import (
 
 // JWT 对象
 type JWT struct {
-	SignKey []byte // 密钥
+	SecretKey  []byte // 密钥
+	MaxRefresh time.Duration
 }
 
 // UserInfo 用户信息//
@@ -28,34 +27,34 @@ type UserInfo struct {
 // CustomJWTClaims 自定义 payload 信息
 type CustomJWTClaims struct {
 	UserInfo
+	ExpireAt int64
 	jwtpkg.RegisteredClaims
 }
 
 // NewJWT 创建 JWT 实例
 func NewJWT() *JWT {
-	jwtKey := make([]byte, 32)
-	// 生成随机密钥
-	if _, err := rand.Read(jwtKey); err != nil {
-		console.Error(err.Error())
-	}
+
 	return &JWT{
-		SignKey: jwtKey,
+		SecretKey:  []byte(global.AppSetting.JWTSecretKey),
+		MaxRefresh: time.Duration(global.AppSetting.JWTMaxExpireTime) * time.Minute,
 	}
 }
 
 // IssueToken 签发 token
 func (jwt *JWT) IssueToken(userinfo UserInfo) string {
 
+	expire := jwt.expireTime()
 	claims := &CustomJWTClaims{
 		UserInfo: UserInfo{
 			UserID:        userinfo.UserID,        // 用户ID
 			UserLoginName: userinfo.UserLoginName, // 用户登陆名
 		},
+		ExpireAt: expire.Unix(),
 		RegisteredClaims: jwtpkg.RegisteredClaims{
-			Issuer:    global.AppSetting.Name,                  // 签发者
-			IssuedAt:  jwtpkg.NewNumericDate(time.Now()),       // 签发日期
-			NotBefore: jwtpkg.NewNumericDate(time.Now()),       // 签发生效日期
-			ExpiresAt: jwtpkg.NewNumericDate(jwt.expireTime()), // 签发过期日期
+			Issuer:    global.AppSetting.Name,            // 签发者
+			IssuedAt:  jwtpkg.NewNumericDate(time.Now()), // 签发日期
+			NotBefore: jwtpkg.NewNumericDate(time.Now()), // 签发生效日期
+			ExpiresAt: jwtpkg.NewNumericDate(expire),     // 签发过期日期
 		},
 	}
 
@@ -69,7 +68,7 @@ func (jwt *JWT) IssueToken(userinfo UserInfo) string {
 
 // 生成 Token
 func (jwt *JWT) generateToken(claims *CustomJWTClaims) (string, error) {
-	return jwtpkg.NewWithClaims(jwtpkg.SigningMethodHS256, claims).SignedString(jwt.SignKey)
+	return jwtpkg.NewWithClaims(jwtpkg.SigningMethodHS256, claims).SignedString(jwt.SecretKey)
 }
 
 // 获取过期时间
@@ -97,7 +96,7 @@ func (jwt *JWT) ParseToken(c *gin.Context) (*CustomJWTClaims, error) {
 	}
 
 	// 解析 TokenString
-	tokenClaims, err := jwt.parseTokenString(tokenString)
+	token, err := jwt.parseTokenString(tokenString)
 
 	// 解析出错
 	if err != nil {
@@ -105,8 +104,8 @@ func (jwt *JWT) ParseToken(c *gin.Context) (*CustomJWTClaims, error) {
 	}
 
 	// 解析出的数据与 CustomJWTClaims 结构校验
-	if tokenClaims != nil {
-		if claims, ok := tokenClaims.Claims.(*CustomJWTClaims); ok && tokenClaims.Valid {
+	if token != nil {
+		if claims, ok := token.Claims.(*CustomJWTClaims); ok && token.Valid {
 			return claims, nil
 		}
 	}
@@ -125,7 +124,7 @@ func (jwt *JWT) getTokenFromHeader(c *gin.Context) (string, error) {
 	tokenSlice := strings.SplitN(tokenString, " ", 2)
 	if len(tokenSlice) != 2 || tokenSlice[0] != "Bearer" {
 		// 格式错误
-		return "", errors.New("建权令牌错误")
+		return "", errors.New("token错误")
 	}
 	return tokenSlice[1], nil
 }
@@ -133,6 +132,22 @@ func (jwt *JWT) getTokenFromHeader(c *gin.Context) (string, error) {
 // jwt.ParseWithClaims 解析 tokenString
 func (jwt *JWT) parseTokenString(tokenString string) (*jwtpkg.Token, error) {
 	return jwtpkg.ParseWithClaims(tokenString, &CustomJWTClaims{}, func(token *jwtpkg.Token) (interface{}, error) {
-		return jwt.SignKey, nil
+		return jwt.SecretKey, nil
 	})
+}
+
+// RefreshToken 刷新 token
+func (jwt *JWT) RefreshToken(c *gin.Context) (string, error) {
+	// 解析 token
+	claims, err := jwt.ParseToken(c)
+	if err != nil {
+		return "", err
+	}
+
+	t := time.Now().Add(-jwt.MaxRefresh).Unix()
+	if claims.IssuedAt.Unix() > t {
+		claims.RegisteredClaims.ExpiresAt = jwtpkg.NewNumericDate(jwt.expireTime())
+		return jwt.generateToken(claims)
+	}
+	return "", errors.New("令牌已过最大刷新时间")
 }
