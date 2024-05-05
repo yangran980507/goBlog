@@ -18,6 +18,7 @@ type LoginController struct {
 
 // LoginUser 登陆处理函数
 func (lc *LoginController) LoginUser(c *gin.Context) {
+
 	// 创建验证结构体空值实例
 	request := requests.SigninUserValidation{}
 	if ok := requests.BindAndValid(c, &request, requests.SigninUserValidate); !ok {

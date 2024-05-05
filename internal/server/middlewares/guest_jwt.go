@@ -8,14 +8,16 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+// GuestAuth 对需要鉴权的请求接口使用
 func GuestAuth() gin.HandlerFunc {
 	return func(c *gin.Context) {
 
 		if _, err := jwt.NewJWT().ParseToken(c); err == nil {
+			// 已授权，返回 err messages
 			response.NewResponse(c, errcode.ErrTokenInvalid.ParseCode()).WithResponse("请先退出登陆")
-			return
+			// 后续 handler 不再执行
+			c.Abort()
 		}
 
-		c.Next()
 	}
 }
