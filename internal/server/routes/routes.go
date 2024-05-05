@@ -63,16 +63,17 @@ func RegisterAPIRoutes(router *gin.Engine) {
 	{
 		// 授权相关路由组
 		auth := apiGroup.Group("/auth")
+
 		{
 			// 用户注册控制实例
 			sc := new(authServer.SignupController)
 			// 获取用户注册页面
-			auth.POST("/signup", sc.SignupUser)
+			auth.POST("/signup", middlewares.GuestAuth(), sc.SignupUser)
 
 			// 用户登陆控制实例
 			lc := new(authServer.LoginController)
 			// 获取用户注册页面
-			auth.POST("/login", lc.LoginUser)
+			auth.POST("/login", middlewares.GuestAuth(), lc.LoginUser)
 			// 刷新令牌
 			auth.POST("/login/refresh-token", middlewares.JWTAuth(), lc.RefreshToken)
 		}
