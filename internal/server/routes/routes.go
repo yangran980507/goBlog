@@ -4,6 +4,7 @@ package routes
 import (
 	authServer "blog/internal/server/controllers/api_controller/auth"
 	"blog/internal/server/controllers/html_controller"
+	"blog/internal/server/middlewares"
 	"github.com/gin-gonic/gin"
 )
 
@@ -73,7 +74,7 @@ func RegisterAPIRoutes(router *gin.Engine) {
 			// 获取用户注册页面
 			auth.POST("/login", lc.LoginUser)
 			// 刷新令牌
-			auth.POST("/login/refresh-token", lc.RefreshToken)
+			auth.POST("/login/refresh-token", middlewares.JWTAuth(), lc.RefreshToken)
 		}
 	}
 }
