@@ -1,7 +1,9 @@
 // Package custom_validate 自定义的验证函数
 package custom_validate
 
-import "blog/internal/server/models/user"
+import (
+	"blog/internal/server/models/user"
+)
 
 // ConfirmDoublePSW 判断两次输入是否相等
 func ConfirmDoublePSW(first, second string, errs map[string][]string) map[string][]string {

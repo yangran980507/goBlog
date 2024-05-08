@@ -2,6 +2,7 @@
 package routes
 
 import (
+	adminServer "blog/internal/server/controllers/api_controller/admin"
 	authServer "blog/internal/server/controllers/api_controller/auth"
 	"blog/internal/server/controllers/html_controller"
 	"blog/internal/server/middlewares"
@@ -76,6 +77,11 @@ func RegisterAPIRoutes(router *gin.Engine) {
 			auth.POST("/login", middlewares.GuestAuth(), lc.LoginUser)
 			// 刷新令牌
 			auth.POST("/login/refresh-token", middlewares.JWTAuth(), lc.RefreshToken)
+		}
+		admin := apiGroup.Group("/admin")
+		{
+			bc := new(adminServer.BookStorageController)
+			admin.POST("/book-storage", bc.BookStorage)
 		}
 	}
 }
