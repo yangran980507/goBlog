@@ -80,8 +80,11 @@ func RegisterAPIRoutes(router *gin.Engine) {
 		}
 		admin := apiGroup.Group("/admin")
 		{
-			bc := new(adminServer.BookStorageController)
-			admin.POST("/book-storage", bc.BookStorage)
+			ac := new(adminServer.AdminController)
+			// 登录 admin
+			admin.POST("/login", ac.LoginAdmin)
+			// 添加图书
+			admin.POST("/book-storage", ac.BookStorage)
 		}
 	}
 }

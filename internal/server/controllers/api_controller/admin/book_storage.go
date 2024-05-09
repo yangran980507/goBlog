@@ -2,7 +2,6 @@
 package admin
 
 import (
-	"blog/internal/server/controllers"
 	"blog/internal/server/models/books"
 	"blog/internal/server/requests"
 	"blog/pkg/errcode"
@@ -13,11 +12,7 @@ import (
 	"time"
 )
 
-type BookStorageController struct {
-	controllers.BaseController
-}
-
-func (bc *BookStorageController) BookStorage(c *gin.Context) {
+func (ac *AdminController) BookStorage(c *gin.Context) {
 	request := requests.BookStorageValidation{}
 	if ok := requests.BindAndValid(c, &request, requests.BookStorageValidate); !ok {
 		return

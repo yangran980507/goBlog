@@ -3,13 +3,13 @@ package requests
 
 import "github.com/thedevsaddam/govalidator"
 
-type SigninUserValidation struct {
+type SignInValidation struct {
 	LoginName string `json:"login_name" valid:"login_name"`
 	Password  string `json:"password" valid:"password"`
 }
 
-// SigninUserValidate 用户登陆验证
-func SigninUserValidate(data interface{}) map[string][]string {
+// SignInValidate 用户登陆验证
+func SignInValidate(data interface{}) map[string][]string {
 	// 验证规则
 	rules := govalidator.MapData{
 		"login_name": {"required"},

@@ -1,8 +1,7 @@
-// Package auth 用户登陆处理函数
-package auth
+// Package admin 管理员登录处理函数
+package admin
 
 import (
-	"blog/internal/server/controllers"
 	"blog/internal/server/requests"
 	"blog/pkg/auth"
 	"blog/pkg/errcode"
@@ -11,14 +10,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-// LoginController 用户登陆控制器
-type LoginController struct {
-	controllers.BaseController
-}
-
-// LoginUser 登陆处理函数
-func (lc *LoginController) LoginUser(c *gin.Context) {
-
+func (ac *AdminController) LoginAdmin(c *gin.Context) {
 	// 创建验证结构体空值实例
 	request := requests.SignInValidation{}
 	if ok := requests.BindAndValid(c, &request, requests.SignInValidate); !ok {
@@ -32,14 +24,15 @@ func (lc *LoginController) LoginUser(c *gin.Context) {
 		Password:  request.Password,
 	}
 	userModel, err := loginInfo.Login()
+
 	if err != nil {
 		// 登陆失败
 		response.NewResponse(c, errcode.ErrTokenInvalid.ParseCode()).
 			WithResponse("登陆失败:" + err.Error())
 	} else {
-		if allow := userModel.IsManager; allow {
+		if allow := userModel.IsManager; !allow {
 			response.NewResponse(c, errcode.ErrTokenInvalid.ParseCode()).
-				WithResponse("请使用普通用户账号登录!")
+				WithResponse("请使用管理员账号登录!")
 		} else {
 			// 创建 jwt 鉴权结构体实例
 			userinfo := jwt.UserInfo{
@@ -51,25 +44,8 @@ func (lc *LoginController) LoginUser(c *gin.Context) {
 			// 返回成功码，令牌及用户数据
 			response.NewResponse(c, errcode.ErrSuccess.ParseCode()).WithResponse(
 				gin.H{
-					"user":  userModel,
 					"token": token,
 				})
 		}
-	}
-}
-
-// RefreshToken 刷新 Access token
-func (lc *LoginController) RefreshToken(c *gin.Context) {
-	token, err := jwt.NewJWT().RefreshToken(c)
-
-	if err != nil {
-		response.NewResponse(c, errcode.ErrTokenInvalid.ParseCode()).WithResponse(
-			"令牌刷新无效:" + err.Error())
-	} else {
-		// 返回成功码，令牌及用户数据
-		response.NewResponse(c, errcode.ErrSuccess.ParseCode()).WithResponse(
-			gin.H{
-				"token": token,
-			})
 	}
 }

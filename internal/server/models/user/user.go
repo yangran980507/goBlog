@@ -23,9 +23,9 @@ type User struct {
 	// 电话号码
 	Phone string `json:"phone,omitempty"`
 	// 账号是否可用
-	Freeze bool `json:"freeze"`
+	Freeze bool `json:"-"`
 	// 用户身份 1：用户；2：管理
-	Status int `json:"status,omitempty"`
+	IsManager bool `json:"-"`
 	// 折扣等
 	Grade int `json:"grade"`
 	// 消费金额

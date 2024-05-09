@@ -28,7 +28,7 @@ func JWTAuth() gin.HandlerFunc {
 			c.Abort()
 		}
 
-		c.Set("current_user", userModel)
+		//c.Set("current_user", userModel)
 
 	}
 }
