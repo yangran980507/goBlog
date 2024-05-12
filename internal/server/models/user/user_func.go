@@ -16,3 +16,13 @@ func GetUserInfo(loginName string) (userModel User) {
 	mysql.DB.Where("login_name = ?", loginName).First(&userModel)
 	return
 }
+
+// GetUsers 获取所有用户
+func GetUsers() ([]User, error) {
+	users := make([]User, 6)
+	if err := mysql.DB.Model(User{}).Where("is_manager = ?", false).
+		Order("id asc").Find(&users).Error; err != nil {
+		return nil, err
+	}
+	return users, nil
+}

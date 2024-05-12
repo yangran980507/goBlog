@@ -85,6 +85,10 @@ func RegisterAPIRoutes(router *gin.Engine) {
 			admin.POST("/login", ac.LoginAdmin)
 			// 添加图书
 			admin.POST("/book-storage", ac.BookStorage)
+			userManage := admin.Group("/users")
+			{
+				userManage.GET("", ac.ShowUsers)
+			}
 		}
 	}
 }

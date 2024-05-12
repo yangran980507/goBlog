@@ -23,7 +23,7 @@ type User struct {
 	// 电话号码
 	Phone string `json:"phone,omitempty"`
 	// 账号是否可用
-	Freeze bool `json:"-"`
+	Freeze bool `json:"freeze"`
 	// 用户身份 1：用户；2：管理
 	IsManager bool `json:"-"`
 	// 折扣等

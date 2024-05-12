@@ -19,7 +19,8 @@ func GetByIsCommended() ([]*Book, error) {
 
 	var books []*Book
 	if err := mysql.DB.Model(Book{}).
-		Where("isCommended = ?", true).Find(&books).Error; err != nil {
+		Where("isCommended = ?", true).
+		Find(&books).Error; err != nil {
 		return nil, err
 	}
 	return books, nil
