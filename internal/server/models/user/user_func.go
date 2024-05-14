@@ -1,7 +1,11 @@
 // Package user 存放 user 相关函数
 package user
 
-import "blog/pkg/mysql"
+import (
+	"blog/pkg/mysql"
+	"blog/pkg/paginator"
+	"github.com/gin-gonic/gin"
+)
 
 // IsUserExist 判断 user 是否存在于数据库中
 func IsUserExist(user string) bool {
@@ -25,4 +29,18 @@ func GetUsers() ([]User, error) {
 		return nil, err
 	}
 	return users, nil
+}
+
+// Paginate 查询数据并进行分页
+func Paginate(c *gin.Context, count int) (users []User, page paginator.Page) {
+	page = paginator.Paginate(
+		c,
+		mysql.DB.Model(&User{}).Not("is_manager = ?", true),
+		"admin",
+		"users",
+		&users,
+		count,
+		"id")
+
+	return
 }
