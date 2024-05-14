@@ -88,6 +88,7 @@ func RegisterAPIRoutes(router *gin.Engine) {
 			userManage := admin.Group("/users")
 			{
 				userManage.GET("", ac.ShowUsers)
+				userManage.PUT("/manage-freeze", ac.ManageFreezeUser)
 			}
 		}
 	}

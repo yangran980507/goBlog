@@ -9,7 +9,7 @@ import (
 
 type User struct {
 	// 用户编号
-	models.BaseMode
+	models.BaseMode `json:"-"`
 	// 登陆名
 	LoginName string `json:"login_name"`
 	// 真实名
@@ -17,11 +17,11 @@ type User struct {
 	// 密码
 	PassWord string `json:"-"`
 	// 地址
-	Address string `json:"address,omitempty"`
+	Address string `json:"address"`
 	// 邮编
-	PostCode string `json:"post_code,omitempty"`
+	PostCode string `json:"post_code"`
 	// 电话号码
-	Phone string `json:"phone,omitempty"`
+	Phone string `json:"phone"`
 	// 账号是否可用
 	Freeze bool `json:"freeze"`
 	// 用户身份 1：用户；2：管理
@@ -40,4 +40,13 @@ func (userModel *User) Create() {
 // ComparePSW 密码比较
 func (userModel *User) ComparePSW(psw string) bool {
 	return encryption.BcryptCheck(psw, userModel.PassWord)
+}
+
+// MemberFreezeUpdate 更新用户 freeze 字段
+func (userModel *User) MemberFreezeUpdate() error {
+	if err := mysql.DB.Model(&User{}).Where("login_name = ?", userModel.LoginName).
+		Update("freeze", !userModel.Freeze).Error; err != nil {
+		return err
+	}
+	return nil
 }
