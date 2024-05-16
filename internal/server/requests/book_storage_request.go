@@ -34,7 +34,7 @@ type BookStorageValidation struct {
 func BookStorageValidate(data interface{}) map[string][]string {
 	// 验证规则
 	rules := govalidator.MapData{
-		"book_number": []string{"required"},
+		"book_number": []string{"required", "exists:books-book_number"},
 		"book_name":   []string{"required"},
 		"book_type":   []string{"required"},
 		"publisher":   []string{"required"},
@@ -49,7 +49,9 @@ func BookStorageValidate(data interface{}) map[string][]string {
 	// 返回错误信息
 	messages := govalidator.MapData{
 
-		"book_number": []string{"required: 书号为必填"},
+		"book_number": []string{
+			"required: 书号为必填",
+		},
 		"book_name":   []string{"required: 书名为必填"},
 		"book_type":   []string{"required: 类别名称为必填"},
 		"publisher":   []string{"required: 出版社为必填"},
