@@ -22,22 +22,23 @@ type Page struct {
 
 // Paginate 分页数据生成
 func Paginate(c *gin.Context, db *gorm.DB, controller string, tableName string,
-	data interface{}, count int, sortBy string) Page {
+	data interface{}, count int, sortBy string, orderBy string) Page {
 
 	p := &Paginator{
 		ctx:          c,
 		query:        db,
 		sort:         sortBy,
+		order:        orderBy,
 		countPerPage: count,
 	}
 	p.initPaginator(controller, tableName)
 	err := p.query.
-		Preload(clause.Associations). // 预加载全部关联
-		Order(p.sort + " asc").       // 升序排序
-		Limit(p.countPerPage).        // 查询数
-		Offset(p.offset).             // 查询跳过数
-		Find(data).                   // 查询结果返回
-		Error                         // 错误
+		Preload(clause.Associations).  // 预加载全部关联
+		Order(p.sort + " " + p.order). // 升序排序
+		Limit(p.countPerPage).         // 查询数
+		Offset(p.offset).              // 查询跳过数
+		Find(data).                    // 查询结果返回
+		Error                          // 错误
 
 	if err != nil {
 		logger.LogIf(err)

@@ -27,10 +27,10 @@ func RegisterAPIRoutes(router *gin.Engine) {
 			cliGroup.GET("/signup", hc.SignupPage)
 
 			// 图书分类
-			cliGroup.GET("/books-categories", hc.BooksCategories)
+			cliGroup.GET("/book-categories", hc.BooksCategories)
 
 			// 图书信息
-			cliGroup.GET("/books-messages", hc.BooksMessages)
+			cliGroup.GET("/book-messages", hc.BooksMessages)
 
 			// 定单查询
 			cliGroup.GET("/order-query", hc.OrdersQuery)
@@ -42,10 +42,10 @@ func RegisterAPIRoutes(router *gin.Engine) {
 			cliGroup.GET("/cashier", hc.Cashier)
 
 			// 新书上架
-			cliGroup.GET("/new-books", hc.NewBooks)
+			cliGroup.GET("/new-book", hc.NewBooks)
 
 			// 查询图书
-			cliGroup.GET("/books-query", hc.BooksQuery)
+			cliGroup.GET("/book-query", hc.BooksQuery)
 
 			// 空购物车
 			cliGroup.GET("/empty-shopping", hc.EmptyShoppingCart)
@@ -83,8 +83,14 @@ func RegisterAPIRoutes(router *gin.Engine) {
 			ac := new(adminServer.AdminController)
 			// 登录 admin
 			admin.POST("/login", ac.LoginAdmin)
-			// 添加图书
-			admin.POST("/book-storage", ac.BookStorage)
+			bookManage := admin.Group("/books")
+			{
+				// 添加图书
+				bookManage.POST("/book-storage", ac.BookStorage)
+				// 图书信息
+				bookManage.GET("", ac.GetBooksAllByPaginator)
+			}
+
 			userManage := admin.Group("/users")
 			{
 				userManage.GET("", ac.ShowUsers)

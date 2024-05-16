@@ -1,5 +1,5 @@
-// Package books 图书模型
-package books
+// Package book 图书模型
+package book
 
 import (
 	"blog/internal/server/models"

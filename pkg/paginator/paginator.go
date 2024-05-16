@@ -21,6 +21,7 @@ type Paginator struct {
 	totalCount   int          // 数据库中数据条数
 	offset       int          // 查询数据自动跳过行数
 	sort         string       // 查询后排序column
+	order        string       // 顺序："asc" 或者 "desc"
 }
 
 func (p *Paginator) initPaginator(controller, tableName string) {

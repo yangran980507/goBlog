@@ -1,8 +1,8 @@
-// Package admin 图书入库handler
+// Package admin 存放 admin 对 book 的操作
 package admin
 
 import (
-	"blog/internal/server/models/books"
+	"blog/internal/server/models/book"
 	"blog/internal/server/requests"
 	"blog/pkg/errcode"
 	"blog/pkg/helps"
@@ -12,13 +12,14 @@ import (
 	"time"
 )
 
+// BookStorage 图书入库
 func (ac *AdminController) BookStorage(c *gin.Context) {
 	request := requests.BookStorageValidation{}
 	if ok := requests.BindAndValid(c, &request, requests.BookStorageValidate); !ok {
 		return
 	}
 
-	bookModel := books.Book{
+	bookModel := book.Book{
 		BookNumber:  request.BookNumber,
 		BookName:    request.BookName,
 		BookType:    request.BookType,
@@ -42,4 +43,15 @@ func (ac *AdminController) BookStorage(c *gin.Context) {
 		response.NewResponse(c, errcode.ErrUnknown.ParseCode()).
 			WithResponse("入库失败，请稍后重试")
 	}
+}
+
+// GetBooksAllByPaginator 通过分类控制器获取入库图书信息
+func (ac *AdminController) GetBooksAllByPaginator(c *gin.Context) {
+
+	books := make([]book.Book, 10)
+	books, page := book.GetBooksAll(c, 10)
+	response.NewResponse(c, errcode.ErrSuccess.ParseCode()).WithResponse(gin.H{
+		"data": books,
+		"page": page,
+	})
 }

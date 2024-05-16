@@ -40,7 +40,8 @@ func Paginate(c *gin.Context, count int) (users []User, page paginator.Page) {
 		"users",
 		&users,
 		count,
-		"id")
+		"id",
+		"asc")
 
 	return
 }
