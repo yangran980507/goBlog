@@ -19,40 +19,29 @@ func RegisterAPIRoutes(router *gin.Engine) {
 		{
 			// 静态资源控制器
 			hc := new(html_controller.HtmlController)
-
 			// 应用主页
 			cliGroup.GET("/home", hc.HomePage)
-
 			// 用户注册
 			cliGroup.GET("/signup", hc.SignupPage)
-
 			// 图书分类
 			cliGroup.GET("/book-categories", hc.BooksCategories)
-
 			// 图书信息
 			cliGroup.GET("/book-messages", hc.BooksMessages)
-
 			// 定单查询
 			cliGroup.GET("/order-query", hc.OrdersQuery)
-
 			// 投票结果
 			cliGroup.GET("/votes", hc.VotingResults)
-
 			// 收银台
 			cliGroup.GET("/cashier", hc.Cashier)
-
 			// 新书上架
 			cliGroup.GET("/new-book", hc.NewBooks)
-
 			// 查询图书
 			cliGroup.GET("/book-query", hc.BooksQuery)
 
 			// 空购物车
 			cliGroup.GET("/empty-shopping", hc.EmptyShoppingCart)
-
 			// 购物车
 			cliGroup.GET("/shopping-cart", hc.ShoppingCart)
-
 			// 销售排行
 			cliGroup.GET("/sales-rank", hc.SalesRank)
 		}
@@ -62,9 +51,8 @@ func RegisterAPIRoutes(router *gin.Engine) {
 	// 接口路由组
 	apiGroup := router.Group("/api")
 	{
-		// 授权相关路由组
+		// 授权路由组
 		auth := apiGroup.Group("/auth")
-
 		{
 			// 用户注册控制实例
 			sc := new(authServer.SignupController)
@@ -78,22 +66,36 @@ func RegisterAPIRoutes(router *gin.Engine) {
 			// 刷新令牌
 			auth.POST("/login/refresh-token", middlewares.JWTAuth(), lc.RefreshToken)
 		}
+
+		// 管理员路由组
 		admin := apiGroup.Group("/admin")
 		{
 			ac := new(adminServer.AdminController)
 			// 登录 admin
 			admin.POST("/login", ac.LoginAdmin)
+
+			// 图书管理路由组
 			bookManage := admin.Group("/books")
+			// 鉴权中间件
+			bookManage.Use(middlewares.JWTAuth(), middlewares.AdminAuth())
 			{
 				// 添加图书
 				bookManage.POST("/book-storage", ac.BookStorage)
 				// 图书信息
 				bookManage.GET("", ac.GetBooksAllByPaginator)
+				// 删除图书
+				bookManage.DELETE("/delete/:id", ac.DeleteBook)
+
 			}
 
+			// 用户管理路由组
 			userManage := admin.Group("/users")
+			// 鉴权中间件
+			userManage.Use(middlewares.JWTAuth(), middlewares.AdminAuth())
 			{
+				// 显示用户
 				userManage.GET("", ac.ShowUsers)
+				// 冻结/解冻用户
 				userManage.PUT("/manage-freeze", ac.ManageFreezeUser)
 			}
 		}

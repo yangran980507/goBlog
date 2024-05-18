@@ -10,7 +10,7 @@ type Book struct {
 	// 图书编号
 	models.BaseMode
 	// 书号：
-	BookNumber string `json:"book_number,omitempty"`
+	BookNumber string `json:"book_number,omitempty" gorm:"book_name;index;unique"`
 	// 书名
 	BookName string `json:"book_name,omitempty"`
 	// 图书类型
@@ -45,6 +45,12 @@ func (book *Book) Create() {
 }
 
 // Delete 删除图书
-func (book *Book) Delete() {
-	mysql.DB.Delete(&book, book.BaseMode.ID)
+func (book *Book) Delete() int64 {
+
+	return mysql.DB.Delete(Book{}, book.ID).RowsAffected
+	/*bookModel := Book{}
+	// 通过书号获取图书编号
+	mysql.DB.Where("book_number = ?", book.BookNumber).First(&bookModel)
+	row := mysql.DB.Delete(&Book{}, bookModel.ID).RowsAffected
+	return row*/
 }

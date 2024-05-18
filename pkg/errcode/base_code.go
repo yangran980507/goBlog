@@ -20,6 +20,9 @@ const (
 	// ErrTokenInvalid / http.StatusUnauthorized / Authorization Failed / 401
 	ErrTokenInvalid
 
+	// ErrNotAdmin / http.StatusUnauthorized / Authorization Failed / 401
+	ErrNotAdmin
+
 	// ErrNotFound / http.StatusNotFound / Route Did Not Fund / 404
 	ErrNotFound
 )
@@ -30,5 +33,6 @@ func InitializeErrorCode() {
 	Register(ErrBind, 400, "Error Occurred While Binding Request")
 	Register(ErrValidation, 400, "Validation Failed")
 	Register(ErrTokenInvalid, 401, "Authorization Failed")
+	Register(ErrNotAdmin, 401, "Have no Authority to execute")
 	Register(ErrNotFound, 404, "Route Did Not Fund")
 }

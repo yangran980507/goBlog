@@ -11,7 +11,7 @@ type User struct {
 	// 用户编号
 	models.BaseMode `json:"-"`
 	// 登陆名
-	LoginName string `json:"login_name"`
+	LoginName string `json:"login_name" gorm:"index"`
 	// 真实名
 	TrueName string `json:"true_name,omitempty"`
 	// 密码

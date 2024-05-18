@@ -2,13 +2,16 @@
 package admin
 
 import (
+	"blog/internal/server/models"
 	"blog/internal/server/models/book"
 	"blog/internal/server/requests"
 	"blog/pkg/errcode"
 	"blog/pkg/helps"
 	"blog/pkg/helps/book_helps"
+	"blog/pkg/logger"
 	"blog/pkg/response"
 	"github.com/gin-gonic/gin"
+	"strconv"
 	"time"
 )
 
@@ -36,12 +39,12 @@ func (ac *AdminController) BookStorage(c *gin.Context) {
 
 	bookModel.Create()
 
-	if bookModel.ID > 0 {
-		response.NewResponse(c, errcode.ErrSuccess.ParseCode()).
-			WithResponse("入库成功")
-	} else {
+	if bookModel.ID == 0 {
 		response.NewResponse(c, errcode.ErrUnknown.ParseCode()).
 			WithResponse("入库失败，请稍后重试")
+	} else {
+		response.NewResponse(c, errcode.ErrSuccess.ParseCode()).
+			WithResponse("入库成功")
 	}
 }
 
@@ -54,4 +57,28 @@ func (ac *AdminController) GetBooksAllByPaginator(c *gin.Context) {
 		"data": books,
 		"page": page,
 	})
+}
+
+func (ac *AdminController) DeleteBook(c *gin.Context) {
+	// 解析接口
+	id, err := strconv.Atoi(c.Param("id"))
+	if err != nil {
+		logger.LogIf(err)
+		response.NewResponse(c, errcode.ErrUnknown.ParseCode()).WithResponse("删除失败")
+		return
+	}
+
+	idB := models.BaseMode{
+		ID: uint(id),
+	}
+	bookModel := book.Book{
+		BaseMode: idB,
+	}
+
+	row := bookModel.Delete()
+	if row != 1 {
+		response.NewResponse(c, errcode.ErrUnknown.ParseCode()).WithResponse("删除失败")
+	} else {
+		response.NewResponse(c, errcode.ErrSuccess.ParseCode()).WithResponse("删除成功")
+	}
 }
