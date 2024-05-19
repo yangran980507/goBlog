@@ -4,6 +4,7 @@ package database
 import (
 	"blog/global"
 	"blog/internal/server/models/book"
+	"blog/internal/server/models/notice"
 	"blog/internal/server/models/user"
 	blogmysql "blog/pkg/mysql"
 	"fmt"
@@ -41,6 +42,7 @@ func setupDB() {
 	blogmysql.SqlDB.SetConnMaxLifetime(global.MysqlSetting.ConnMaxLifeTime * time.Second)
 
 	//自动迁移至数据库
-	blogmysql.DB.AutoMigrate(&user.User{}) // 用户表迁移
-	blogmysql.DB.AutoMigrate(&book.Book{}) // 图书表迁移
+	blogmysql.DB.AutoMigrate(&user.User{})     // 用户表迁移
+	blogmysql.DB.AutoMigrate(&book.Book{})     // 图书表迁移
+	blogmysql.DB.AutoMigrate(&notice.Notice{}) // 公告表迁移
 }

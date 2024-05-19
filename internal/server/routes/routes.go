@@ -102,6 +102,17 @@ func RegisterAPIRoutes(router *gin.Engine) {
 				// 冻结/解冻用户
 				userManage.PUT("/manage-freeze", ac.ManageFreezeUser)
 			}
+
+			// 公告管理路由组
+			noticeManage := admin.Group("/notices")
+			{
+				// 显示公告
+				noticeManage.GET("", ac.NoticeGet)
+				// 添加公告
+				noticeManage.POST("/notice-release", ac.NoticeCreate)
+				// 删除公告
+				noticeManage.DELETE("/delete/:id", ac.NoticeDelete)
+			}
 		}
 	}
 }
