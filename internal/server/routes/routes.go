@@ -85,6 +85,10 @@ func RegisterAPIRoutes(router *gin.Engine) {
 				bookManage.GET("", ac.GetBooksAllByPaginator)
 				// 删除图书
 				bookManage.DELETE("/delete/:id", ac.DeleteBook)
+				// 修改图书
+				bookManage.PUT("update/:id", ac.BookUpdate)
+				//
+				bookManage.GET("/:id", ac.GetBook)
 
 			}
 

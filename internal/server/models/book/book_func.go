@@ -35,8 +35,7 @@ func GetBooksAll(c *gin.Context, count int) (books []Book, page paginator.Page) 
 
 	page = paginator.Paginate(
 		c,
-		mysql.DB.Model(Book{}).Select("book_number", "book_name", "publisher",
-			"is_new_book", "is_commended"),
+		mysql.DB.Model(Book{}),
 		"admin",
 		"book",
 		&books,

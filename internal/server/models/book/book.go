@@ -10,7 +10,7 @@ type Book struct {
 	// 图书编号
 	models.BaseMode
 	// 书号：
-	BookNumber string `json:"book_number,omitempty" gorm:"book_name;index;unique"`
+	BookNumber string `json:"book_number,omitempty" gorm:"book_number;index;unique"`
 	// 书名
 	BookName string `json:"book_name,omitempty"`
 	// 图书类型
@@ -53,4 +53,29 @@ func (book *Book) Delete() int64 {
 	mysql.DB.Where("book_number = ?", book.BookNumber).First(&bookModel)
 	row := mysql.DB.Delete(&Book{}, bookModel.ID).RowsAffected
 	return row*/
+}
+
+func (book *Book) Get() (Book, int64) {
+	bookModel := Book{}
+	row := mysql.DB.First(&bookModel, book.ID).RowsAffected
+	return bookModel, row
+}
+
+func (book *Book) Update() int64 {
+	return mysql.DB.Table("books").
+		Where("id = ?", book.ID).
+		Omit("id", "book_number", "in_time", "quantity", "selled").
+		Updates(map[string]interface{}{
+			"book_name":    book.BookName,
+			"book_type":    book.BookType,
+			"publisher":    book.Publisher,
+			"author":       book.Author,
+			"introduce":    book.Introduce,
+			"price":        book.Price,
+			"pdate":        book.Pdate,
+			"pic_url":      book.PicURL,
+			"is_new_book":  book.IsNewBook,
+			"is_commended": book.IsCommended,
+		}).
+		RowsAffected
 }
