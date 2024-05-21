@@ -23,23 +23,24 @@ func (ac *AdminController) BookStorage(c *gin.Context) {
 	}
 
 	bookModel := book.Book{
-		BookNumber:  request.BookNumber,
-		BookName:    request.BookName,
-		BookType:    request.BookType,
-		Publisher:   request.Publisher,
-		Author:      request.Author,
-		Introduce:   request.Introduce,
-		Price:       request.Price,
-		Pdate:       helps.StrToTimeUnix(request.Pdate),
-		PicURL:      "../../assets/images/" + request.PicURL,
-		InTime:      time.Now().Unix(),
-		IsNewBook:   book_helps.RequestStrToBool(request.IsNewBook),
-		IsCommended: book_helps.RequestStrToBool(request.IsCommended),
+		BookNumber:   request.BookNumber,
+		BookName:     request.BookName,
+		CategoryName: request.CategoryName,
+		Publisher:    request.Publisher,
+		Author:       request.Author,
+		Introduce:    request.Introduce,
+		Price:        request.Price,
+		Pdate:        helps.StrToTimeUnix(request.Pdate),
+		PicURL:       "../../assets/images/" + request.PicURL,
+		InTime:       time.Now().Unix(),
+		IsNewBook:    book_helps.RequestStrToBool(request.IsNewBook),
+		IsCommended:  book_helps.RequestStrToBool(request.IsCommended),
 	}
 
-	bookModel.Create()
+	err := bookModel.Create()
 
-	if bookModel.ID == 0 {
+	if err != nil {
+		logger.LogIf(err)
 		response.NewResponse(c, errcode.ErrUnknown.ParseCode()).
 			WithResponse("入库失败，请稍后重试")
 	} else {
@@ -126,17 +127,17 @@ func (ac *AdminController) BookUpdate(c *gin.Context) {
 	}
 
 	bookModel := book.Book{
-		BaseMode:    models.BaseMode{ID: uint(id)},
-		BookName:    request.BookName,
-		BookType:    request.BookType,
-		Publisher:   request.Publisher,
-		Author:      request.Author,
-		Introduce:   request.Introduce,
-		Price:       request.Price,
-		Pdate:       helps.StrToTimeUnix(request.Pdate),
-		PicURL:      "../../assets/images/" + request.PicURL,
-		IsNewBook:   book_helps.RequestStrToBool(request.IsNewBook),
-		IsCommended: book_helps.RequestStrToBool(request.IsCommended),
+		BaseMode:     models.BaseMode{ID: uint(id)},
+		BookName:     request.BookName,
+		CategoryName: request.CategoryName,
+		Publisher:    request.Publisher,
+		Author:       request.Author,
+		Introduce:    request.Introduce,
+		Price:        request.Price,
+		Pdate:        helps.StrToTimeUnix(request.Pdate),
+		PicURL:       "../../assets/images/" + request.PicURL,
+		IsNewBook:    book_helps.RequestStrToBool(request.IsNewBook),
+		IsCommended:  book_helps.RequestStrToBool(request.IsCommended),
 	}
 
 	row := bookModel.Update()

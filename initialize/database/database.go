@@ -44,5 +44,6 @@ func setupDB() {
 	//自动迁移至数据库
 	blogmysql.DB.AutoMigrate(&user.User{})     // 用户表迁移
 	blogmysql.DB.AutoMigrate(&book.Book{})     // 图书表迁移
+	blogmysql.DB.AutoMigrate(&book.Category{}) // 图书类别表迁移
 	blogmysql.DB.AutoMigrate(&notice.Notice{}) // 公告表迁移
 }

@@ -7,6 +7,7 @@ import (
 	"blog/pkg/mysql"
 )
 
+// User 用户模型
 type User struct {
 	// 用户编号
 	models.BaseMode `json:"-"`
