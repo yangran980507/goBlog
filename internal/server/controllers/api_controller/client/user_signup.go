@@ -1,8 +1,7 @@
-// Package auth 用户注册处理函数
-package auth
+// Package client 用户注册处理函数
+package client
 
 import (
-	"blog/internal/server/controllers"
 	"blog/internal/server/models/user"
 	"blog/internal/server/requests"
 	"blog/pkg/errcode"
@@ -11,13 +10,8 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-// SignupController 用户注册控制器
-type SignupController struct {
-	controllers.BaseController
-}
-
 // SignupUser 用户注册处理函数
-func (sc *SignupController) SignupUser(c *gin.Context) {
+func (uc *UserController) SignupUser(c *gin.Context) {
 
 	// 创建验证结构体空值实例
 	request := requests.SignupUserValidation{}

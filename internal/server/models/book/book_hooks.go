@@ -22,16 +22,3 @@ func (book *Book) BeforeCreate(tx *gorm.DB) (err error) {
 	// 该类型存在
 	return nil
 }
-
-/*
-// AfterCreate 创建图书之后调用
-// 将关联写进分类
-func (book *Book) AfterCreate(tx *gorm.DB) (err error) {
-	categoryModel, err := book.GetCategory()
-	err = book.Append(categoryModel)
-	if err != nil {
-		return err
-	}
-	return nil
-}
-*/

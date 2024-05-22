@@ -1,8 +1,7 @@
-// Package auth 用户登陆处理函数
-package auth
+// Package client 用户登陆处理函数
+package client
 
 import (
-	"blog/internal/server/controllers"
 	"blog/internal/server/requests"
 	"blog/pkg/auth"
 	"blog/pkg/errcode"
@@ -11,13 +10,8 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-// LoginController 用户登陆控制器
-type LoginController struct {
-	controllers.BaseController
-}
-
 // LoginUser 登陆处理函数
-func (lc *LoginController) LoginUser(c *gin.Context) {
+func (uc *UserController) LoginUser(c *gin.Context) {
 
 	// 创建验证结构体空值实例
 	request := requests.SignInValidation{}
@@ -59,7 +53,7 @@ func (lc *LoginController) LoginUser(c *gin.Context) {
 }
 
 // RefreshToken 刷新 Access token
-func (lc *LoginController) RefreshToken(c *gin.Context) {
+func (uc *UserController) RefreshToken(c *gin.Context) {
 	token, err := jwt.NewJWT().RefreshToken(c)
 
 	if err != nil {

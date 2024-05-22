@@ -3,7 +3,7 @@ package routes
 
 import (
 	adminServer "blog/internal/server/controllers/api_controller/admin"
-	authServer "blog/internal/server/controllers/api_controller/auth"
+	cliServer "blog/internal/server/controllers/api_controller/client"
 	"blog/internal/server/controllers/html_controller"
 	"blog/internal/server/middlewares"
 	"github.com/gin-gonic/gin"
@@ -52,19 +52,17 @@ func RegisterAPIRoutes(router *gin.Engine) {
 	apiGroup := router.Group("/api")
 	{
 		// 授权路由组
-		auth := apiGroup.Group("/auth")
+		client := apiGroup.Group("/client")
 		{
-			// 用户注册控制实例
-			sc := new(authServer.SignupController)
-			// 获取用户注册页面
-			auth.POST("/signup", middlewares.GuestAuth(), sc.SignupUser)
+			// 用户端路由控制实例
+			uc := new(cliServer.UserController)
 
-			// 用户登陆控制实例
-			lc := new(authServer.LoginController)
+			// 获取用户注册页面
+			client.POST("/signup", middlewares.GuestAuth(), uc.SignupUser)
 			// 获取用户登陆页面
-			auth.POST("/login", middlewares.GuestAuth(), lc.LoginUser)
+			client.POST("/login", middlewares.GuestAuth(), uc.LoginUser)
 			// 刷新令牌
-			auth.POST("/login/refresh-token", middlewares.JWTAuth(), lc.RefreshToken)
+			client.POST("/login/refresh-token", middlewares.JWTAuth(), uc.RefreshToken)
 		}
 
 		// 管理员路由组

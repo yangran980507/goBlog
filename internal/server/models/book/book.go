@@ -107,8 +107,10 @@ func (book *Book) GetCategory() (Category, error) {
 	return categoryModel, err
 }
 
-/*
-// Append 添加关联
-func (book *Book) Append(category Category) error {
-	return mysql.DB.Model(&category).Association("books").Append(book)
-}*/
+// GetCategories 获取所有分类
+func GetCategories() []Category {
+
+	var categories []Category
+	mysql.DB.Model(Category{}).Order("id asc").Find(&categories)
+	return categories
+}

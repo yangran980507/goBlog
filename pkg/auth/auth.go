@@ -1,4 +1,4 @@
-// Package auth 授权登陆
+// Package client 授权登陆
 package auth
 
 import (
