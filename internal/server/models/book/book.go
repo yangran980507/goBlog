@@ -11,11 +11,11 @@ type Book struct {
 	// 图书编号
 	models.BaseMode
 	// 书号：
-	BookNumber string `json:"book_number,omitempty" gorm:"book_number;index;unique"`
+	BookNumber string `json:"book_number,omitempty" gorm:"column:book_number;index;unique"`
 	// 书名
 	BookName string `json:"book_name,omitempty"`
 	// 图书类型 ID
-	CategoryName string `json:"category_name" gorm:"category_name"`
+	CategoryName string `json:"category_name" gorm:"column:category_name;not null"`
 	// 出版社
 	Publisher string `json:"publisher,omitempty"`
 	// 作者
@@ -42,7 +42,10 @@ type Book struct {
 
 // Create 创建图书
 func (book *Book) Create() error {
-	return mysql.DB.Create(&book).Error
+	if err := mysql.DB.Create(&book).Error; err != nil {
+		return err
+	}
+	return nil
 }
 
 // Delete 删除图书
@@ -88,9 +91,9 @@ type Category struct {
 	// 分类编号
 	models.BaseMode
 	// 类别名
-	Name string `json:"name" gorm:"index;primaryKey;not null"`
+	Name string `json:"name" gorm:"column:name"`
 	// 对应图书
-	Books []Book `json:"books" gorm:"corresponding_books"` //";foreignKey:CategoryName;references:Name"`
+	Books []Book `json:"books" gorm:"foreignKey:category_name;references:name"`
 }
 
 // AddCategory 添加分类
@@ -107,10 +110,22 @@ func (book *Book) GetCategory() (Category, error) {
 	return categoryModel, err
 }
 
-// GetCategories 获取所有分类
-func GetCategories() []Category {
+// AddAssociation 添加关联
+func (book *Book) AddAssociation(category *Category) error {
 
-	var categories []Category
-	mysql.DB.Model(Category{}).Order("id asc").Find(&categories)
-	return categories
+	if err := mysql.DB.Model(category).Association("CBooks").Append(&book); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+// FindAssociation 查找关联
+func (category *Category) FindAssociation(book *[]Book) error {
+
+	if err := mysql.DB.Model(category).Association("CBooks").Find(&book); err != nil {
+		return err
+	}
+
+	return nil
 }

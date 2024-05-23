@@ -51,26 +51,42 @@ func RegisterAPIRoutes(router *gin.Engine) {
 	// 接口路由组
 	apiGroup := router.Group("/api")
 	{
+		// 用户端路由控制实例
+		uc := new(cliServer.UserController)
 		// 授权路由组
 		client := apiGroup.Group("/client")
 		{
-			// 用户端路由控制实例
-			uc := new(cliServer.UserController)
+			// 用户鉴权路由组
+			auth := client.Group("/auth")
+			{
+				// 获取用户注册页面
+				auth.POST("/signup", middlewares.GuestAuth(), uc.SignupUser)
+				// 获取用户登陆页面
+				auth.POST("/login", middlewares.GuestAuth(), uc.LoginUser)
+				// 刷新令牌
+				auth.POST("/login/refresh-token",
+					middlewares.JWTAuth(), uc.RefreshToken)
+			}
 
-			// 获取用户注册页面
-			client.POST("/signup", middlewares.GuestAuth(), uc.SignupUser)
-			// 获取用户登陆页面
-			client.POST("/login", middlewares.GuestAuth(), uc.LoginUser)
-			// 刷新令牌
-			client.POST("/login/refresh-token", middlewares.JWTAuth(), uc.RefreshToken)
+			// 获取图书
+			collection := client.Group("")
+			{
+				// 通过分类获取图书
+				collection.GET("get-book-by-category", uc.GetBookByCategory)
+			}
 		}
 
 		// 管理员路由组
 		admin := apiGroup.Group("/admin")
 		{
 			ac := new(adminServer.AdminController)
-			// 登录 admin
-			admin.POST("/login", ac.LoginAdmin)
+
+			// 管理员鉴权路由组
+			auth := admin.Group("/auth")
+			{
+				// 登录 admin
+				auth.POST("/login", ac.LoginAdmin)
+			}
 
 			// 图书管理路由组
 			bookManage := admin.Group("/books")

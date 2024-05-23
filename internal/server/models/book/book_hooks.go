@@ -2,7 +2,6 @@
 package book
 
 import (
-	// "gorm.io/gorm"
 	"gorm.io/gorm"
 )
 
@@ -20,5 +19,14 @@ func (book *Book) BeforeCreate(tx *gorm.DB) (err error) {
 		return nil
 	}
 	// 该类型存在
+	return nil
+}
+
+// AfterCreate 创建图书之后调用
+func (book *Book) AfterCreate(tx *gorm.DB) (err error) {
+	category, _ := book.GetCategory()
+	if err = book.AddAssociation(&category); err != nil {
+		return
+	}
 	return nil
 }

@@ -45,3 +45,11 @@ func GetBooksAll(c *gin.Context, count int) (books []Book, page paginator.Page) 
 
 	return
 }
+
+// GetCategories 获取分类
+func GetCategories() ([]Category, int64) {
+	categories := make([]Category, 10)
+	row := mysql.DB.Preload("Books").
+		Order("id asc").Find(&categories).RowsAffected
+	return categories, row
+}
