@@ -72,16 +72,16 @@ func (book *Book) Update() int64 {
 		Where("id = ?", book.ID).
 		Omit("id", "book_number", "in_time", "quantity", "selled").
 		Updates(map[string]interface{}{
-			"book_name":    book.BookName,
-			"book_type":    book.CategoryName,
-			"publisher":    book.Publisher,
-			"author":       book.Author,
-			"introduce":    book.Introduce,
-			"price":        book.Price,
-			"pdate":        book.Pdate,
-			"pic_url":      book.PicURL,
-			"is_new_book":  book.IsNewBook,
-			"is_commended": book.IsCommended,
+			"book_name":     book.BookName,
+			"category_name": book.CategoryName,
+			"publisher":     book.Publisher,
+			"author":        book.Author,
+			"introduce":     book.Introduce,
+			"price":         book.Price,
+			"pdate":         book.Pdate,
+			"pic_url":       book.PicURL,
+			"is_new_book":   book.IsNewBook,
+			"is_commended":  book.IsCommended,
 		}).
 		RowsAffected
 }
@@ -89,7 +89,7 @@ func (book *Book) Update() int64 {
 // Category 图书类别模型
 type Category struct {
 	// 分类编号
-	models.BaseMode
+	CategoryID uint `json:"category_id" gorm:"column:category_id;primaryKey;autoIncrement"`
 	// 类别名
 	Name string `json:"name" gorm:"column:name"`
 	// 对应图书
@@ -110,22 +110,55 @@ func (book *Book) GetCategory() (Category, error) {
 	return categoryModel, err
 }
 
+// DeleteCategory 删除分类
+func (category *Category) DeleteCategory() {
+	mysql.DB.Delete(&category)
+}
+
+// CountAssociation 关联计数
+func (book *Book) CountAssociation(category *Category) bool {
+
+	return mysql.DB.Model(category).
+		Association("Books").Count() == 0
+}
+
+/*
 // AddAssociation 添加关联
 func (book *Book) AddAssociation(category *Category) error {
 
-	if err := mysql.DB.Model(category).Association("CBooks").Append(&book); err != nil {
+	if err := mysql.DB.Model(category).Association("Books").
+		Append(&book); err != nil {
 		return err
 	}
 
 	return nil
 }
+
 
 // FindAssociation 查找关联
 func (category *Category) FindAssociation(book *[]Book) error {
 
-	if err := mysql.DB.Model(category).Association("CBooks").Find(&book); err != nil {
+	if err := mysql.DB.Model(category).Association("Books").
+		Find(&book); err != nil {
 		return err
 	}
 
 	return nil
 }
+
+// ReplaceAssociation 替换关联
+func (category *Category) ReplaceAssociation(book *Book) error {
+	if err := mysql.DB.Model(category).Association("Books").
+		Replace(&book); err != nil {
+		return err
+	}
+	return nil
+}
+
+// DropAssociation 删除关联
+func (category *Category) DropAssociation(book *Book) {
+	mysql.DB.Model(category).Association("Books").
+		Delete(&book)
+
+}
+*/

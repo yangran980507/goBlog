@@ -122,7 +122,7 @@ func (ac *AdminController) BookUpdate(c *gin.Context) {
 	id, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
 		logger.LogIf(err)
-		response.NewResponse(c, errcode.ErrUnknown.ParseCode()).WithResponse("删除失败")
+		response.NewResponse(c, errcode.ErrUnknown.ParseCode()).WithResponse("修改失败")
 		return
 	}
 
@@ -140,7 +140,24 @@ func (ac *AdminController) BookUpdate(c *gin.Context) {
 		IsCommended:  book_helps.RequestStrToBool(request.IsCommended),
 	}
 
-	row := bookModel.Update()
+	var row int64
+
+	bookOld, _ := bookModel.Get()
+	// 判断类型是否修改
+	if bookOld.CategoryName != bookModel.CategoryName {
+		// 修改,判断类型是否存在
+		_, err = bookModel.GetCategory()
+		if err != nil {
+			// 类型不存在，创建新类型
+			err = bookModel.AddCategory()
+			if err != nil {
+				response.NewResponse(c, errcode.ErrUnknown.ParseCode()).WithResponse("修改失败")
+				return
+			}
+		}
+	}
+
+	row = bookModel.Update()
 
 	if row == 1 {
 		response.NewResponse(c, errcode.ErrSuccess.ParseCode()).
@@ -149,5 +166,10 @@ func (ac *AdminController) BookUpdate(c *gin.Context) {
 
 		response.NewResponse(c, errcode.ErrSuccess.ParseCode()).
 			WithResponse("未作任何修改")
+	}
+
+	categoryModel, _ := bookOld.GetCategory()
+	if bookOld.CountAssociation(&categoryModel) {
+		categoryModel.DeleteCategory()
 	}
 }
