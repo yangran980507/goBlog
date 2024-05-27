@@ -25,6 +25,8 @@ type BookStorageValidation struct {
 	Pdate string `json:"pdate" valid:"pdate"`
 	// 封面路径
 	PicURL string `json:"pic_url" valid:"pic_url"`
+	// 库存
+	Quantity int `json:"quantity" valid:"quantity"`
 	// 是否新书 ？
 	IsNewBook string `json:"is_new_book" valid:"is_new_book"`
 	// 是否推荐 ？
@@ -43,6 +45,7 @@ func BookStorageValidate(data interface{}) map[string][]string {
 		"introduce":     []string{"required"},
 		"price":         []string{"required"},
 		"pdate":         []string{"required"},
+		"quantity":      []string{"required"},
 		"pic_url":       []string{"required"},
 		"is_new_book":   []string{"required"},
 		"is_commended":  []string{"required"},
@@ -62,6 +65,7 @@ func BookStorageValidate(data interface{}) map[string][]string {
 		"price":         []string{"required: 价格为必填"},
 		"pdate":         []string{"required: 发行日期为必填"},
 		"pic_url":       []string{"required: 图片封面为必填"},
+		"quantity":      []string{"required: 库存为必填"},
 		"is_new_book":   []string{"required: 新书选项为必选"},
 		"is_commended":  []string{"required: 推荐选项为必选"},
 	}
@@ -88,6 +92,8 @@ type BookUpdateValidation struct {
 	Pdate string `json:"pdate" valid:"pdate"`
 	// 封面路径
 	PicURL string `json:"pic_url" valid:"pic_url"`
+	// 库存
+	Quantity int `json:"quantity" valid:"quantity"`
 	// 是否新书 ？
 	IsNewBook string `json:"is_new_book" valid:"is_new_book"`
 	// 是否推荐 ？
@@ -106,6 +112,7 @@ func BookUpdateValidate(data interface{}) map[string][]string {
 		"price":         []string{"required"},
 		"pdate":         []string{"required"},
 		"pic_url":       []string{"required"},
+		"quantity":      []string{"required"},
 		"is_new_book":   []string{"required"},
 		"is_commended":  []string{"required"},
 	}
@@ -121,6 +128,7 @@ func BookUpdateValidate(data interface{}) map[string][]string {
 		"price":         []string{"required: 价格为必填"},
 		"pdate":         []string{"required: 发行日期为必填"},
 		"pic_url":       []string{"required: 图片封面为必填"},
+		"quantity":      []string{"required: 库存为必填"},
 		"is_new_book":   []string{"required: 新书选项为必选"},
 		"is_commended":  []string{"required: 推荐选项为必选"},
 	}

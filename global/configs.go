@@ -12,12 +12,13 @@ var (
 	MysqlSetting  *config.MysqlSection
 	LogSetting    *config.LogSection
 	AppSetting    *config.AppSection
+	RedisSetting  *config.RedisSection
 )
 
 func InitializeConf() {
 	err := setupSetting()
 	if err != nil {
-		console.Exit("init.setupSetting failed,err:" + err.Error())
+		console.Exit("init setupSetting failed,err:" + err.Error())
 	}
 }
 
@@ -50,6 +51,12 @@ func setupSetting() error {
 
 	// 应用配置
 	err = setting.ReadSection("App", &AppSetting)
+	if err != nil {
+		return err
+	}
+
+	// redis配置
+	err = setting.ReadSection("Redis", &RedisSetting)
 	if err != nil {
 		return err
 	}

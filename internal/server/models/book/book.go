@@ -80,6 +80,7 @@ func (book *Book) Update() int64 {
 			"price":         book.Price,
 			"pdate":         book.Pdate,
 			"pic_url":       book.PicURL,
+			"quantity":      book.Quantity,
 			"is_new_book":   book.IsNewBook,
 			"is_commended":  book.IsCommended,
 		}).

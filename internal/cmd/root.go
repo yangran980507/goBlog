@@ -5,6 +5,7 @@ import (
 	"blog/global"
 	"blog/initialize/database"
 	"blog/initialize/logger"
+	"blog/initialize/rediscli"
 	"blog/pkg/console"
 	"blog/pkg/errcode"
 	"fmt"
@@ -26,6 +27,8 @@ var RootCmd = &cobra.Command{
 		errcode.InitializeErrorCode()
 		// 初始化日志
 		logger.InitializeLog()
+		// 初始化 redis 连接
+		rediscli.InitializeRedis()
 	},
 }
 

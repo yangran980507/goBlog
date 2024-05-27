@@ -33,6 +33,7 @@ func (ac *AdminController) BookStorage(c *gin.Context) {
 		Pdate:        helps.StrToTimeUnix(request.Pdate),
 		PicURL:       "../../assets/images/" + request.PicURL,
 		InTime:       time.Now().Unix(),
+		Quantity:     request.Quantity,
 		IsNewBook:    book_helps.RequestStrToBool(request.IsNewBook),
 		IsCommended:  book_helps.RequestStrToBool(request.IsCommended),
 	}
@@ -136,6 +137,7 @@ func (ac *AdminController) BookUpdate(c *gin.Context) {
 		Price:        request.Price,
 		Pdate:        helps.StrToTimeUnix(request.Pdate),
 		PicURL:       "../../assets/images/" + request.PicURL,
+		Quantity:     request.Quantity,
 		IsNewBook:    book_helps.RequestStrToBool(request.IsNewBook),
 		IsCommended:  book_helps.RequestStrToBool(request.IsCommended),
 	}
