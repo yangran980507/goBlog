@@ -9,7 +9,8 @@ import (
 )
 
 type RedisClient struct {
-	client *redis.Client
+	Client *redis.Client
+	Ctx    context.Context
 }
 
 var Redis *RedisClient
@@ -26,9 +27,10 @@ func Connect(add string, user string, pw string, db int) {
 func NewClient(add string, user string, pw string, db int) *RedisClient {
 	// 初始化实例
 	rds := &RedisClient{}
+	rds.Ctx = context.Background()
 
 	// 初始化配置
-	rds.client = redis.NewClient(&redis.Options{
+	rds.Client = redis.NewClient(&redis.Options{
 		Addr:     add,
 		Username: user,
 		Password: pw,
@@ -44,8 +46,6 @@ func NewClient(add string, user string, pw string, db int) *RedisClient {
 }
 
 func (rds *RedisClient) ping() (err error) {
-	var ctx = context.Background()
-
-	_, err = rds.client.Ping(ctx).Result()
+	_, err = rds.Client.Ping(rds.Ctx).Result()
 	return
 }

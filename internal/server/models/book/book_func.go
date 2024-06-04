@@ -53,10 +53,3 @@ func GetCategories() ([]Category, int64) {
 		Order("category_id asc").Find(&categories).RowsAffected
 	return categories, row
 }
-
-// CountCategory 类型总数
-func CountCategory() int64 {
-	var count int64
-	mysql.DB.Table("categories").Count(&count)
-	return count
-}

@@ -51,11 +51,12 @@ func RegisterAPIRoutes(router *gin.Engine) {
 	// 接口路由组
 	apiGroup := router.Group("/api")
 	{
-		// 用户端路由控制实例
-		uc := new(cliServer.UserController)
+
 		// 授权路由组
 		client := apiGroup.Group("/client")
 		{
+			// 用户端路由控制实例
+			uc := new(cliServer.UserController)
 			// 用户鉴权路由组
 			auth := client.Group("/auth")
 			{
@@ -70,10 +71,20 @@ func RegisterAPIRoutes(router *gin.Engine) {
 
 			// 获取图书
 			collection := client.Group("")
+			collection.Use(middlewares.JWTAuth())
 			{
 				// 通过分类获取图书
-				collection.GET("get-book-by-category", uc.GetBookByCategory)
+				collection.GET("/get-book-by-category", uc.GetBookByCategory)
 			}
+
+			// 购物车相关
+			cart := client.Group("/carts")
+			cart.Use(middlewares.JWTAuth())
+			{
+				// 显示购物车信息
+				cart.GET("", uc.ShowCarts)
+			}
+
 		}
 
 		// 管理员路由组
@@ -100,7 +111,7 @@ func RegisterAPIRoutes(router *gin.Engine) {
 				// 删除图书
 				bookManage.DELETE("/delete/:id", ac.DeleteBook)
 				// 修改图书
-				bookManage.PUT("update/:id", ac.BookUpdate)
+				bookManage.PUT("/update/:id", ac.BookUpdate)
 				// 单册图书信息
 				bookManage.GET("/:id", ac.GetBook)
 

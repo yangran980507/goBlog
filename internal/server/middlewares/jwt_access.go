@@ -16,7 +16,7 @@ func JWTAuth() gin.HandlerFunc {
 
 		if err != nil {
 			response.NewResponse(c, errcode.ErrTokenInvalid.ParseCode()).
-				WithResponse("请登录后操作")
+				WithResponse("请先登录")
 			c.Abort()
 		}
 
