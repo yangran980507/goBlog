@@ -17,15 +17,8 @@ func (uc *UserController) ShowCarts(c *gin.Context) {
 	uid := CurrentUser(c)
 
 	cartModel := cart.GetCart(uid)
-	if cartModel.Books == nil {
-		response.NewResponse(c, errcode.ErrUnknown.ParseCode()).WithResponse()
-		return
-	}
-
-	if len(cartModel.Books) == 0 {
-		response.NewResponse(c, errcode.ErrSuccess.ParseCode()).WithResponse(gin.H{
-			"cart": cartModel.Books,
-		})
+	if cartModel.Books == nil || len(cartModel.Books) == 0 {
+		response.NewResponse(c, errcode.ErrEmptyCart.ParseCode()).WithResponse("空购物车")
 		return
 	}
 	response.NewResponse(c, errcode.ErrSuccess.ParseCode()).WithResponse(gin.H{
@@ -111,5 +104,15 @@ func (uc *UserController) RemoveFromCarts(c *gin.Context) {
 
 // FlushCarts 清空购物车
 func (uc *UserController) FlushCarts(c *gin.Context) {
-	//
+	// 获取当前用户 id
+	uid := CurrentUser(c)
+
+	if !cart.DelCart(uid) {
+		// 失败返回失败信息
+		response.NewResponse(c, errcode.ErrUnknown.ParseCode()).
+			WithResponse("清空失败，请稍后重试")
+		return
+	}
+
+	response.NewResponse(c, errcode.ErrSuccess.ParseCode()).WithResponse("清空成功")
 }

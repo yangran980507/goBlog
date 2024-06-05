@@ -27,6 +27,11 @@ const (
 	ErrNotFound
 )
 
+const (
+	// ErrEmptyCart / http.StatusOK / OK / 200
+	ErrEmptyCart CodeInt = iota + 101000
+)
+
 func InitializeErrorCode() {
 	Register(ErrSuccess, 200, "OK")
 	Register(ErrUnknown, 500, "Internal Server Error")
@@ -35,4 +40,5 @@ func InitializeErrorCode() {
 	Register(ErrTokenInvalid, 401, "Authorization Failed")
 	Register(ErrNotAdmin, 401, "Have no Authority to execute")
 	Register(ErrNotFound, 404, "Route Did Not Fund")
+	Register(ErrEmptyCart, 200, "Shopping Carts Is Empty")
 }
