@@ -84,6 +84,10 @@ func RegisterAPIRoutes(router *gin.Engine) {
 				cart.GET("", uc.ShowCarts)
 				// 加入购物车
 				cart.POST("/add/:id", uc.AddIntoCarts)
+				// 删除购物车中图书
+				cart.DELETE("/remove/:cart_id", uc.RemoveFromCarts)
+				// 清空购物车
+				cart.DELETE("/flush", uc.FlushCarts)
 			}
 
 		}
