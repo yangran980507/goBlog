@@ -56,14 +56,14 @@ func (ac *AdminController) GetBooksAllByPaginator(c *gin.Context) {
 	books := make([]book.Book, 10)
 	books, page := book.GetBooksAll(c, 10)
 	response.NewResponse(c, errcode.ErrSuccess.ParseCode()).WithResponse(gin.H{
-		"data": books,
-		"page": page,
+		"books": books,
+		"page":  page,
 	})
 }
 
 // DeleteBook 删除库中图书
 func (ac *AdminController) DeleteBook(c *gin.Context) {
-	// 解析接口
+	// 解析接口数据
 	id, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
 		logger.LogIf(err)

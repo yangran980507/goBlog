@@ -36,7 +36,7 @@ func (r *Response) WithResponse(data ...interface{}) {
 	}
 
 	if len(data) != 0 {
-		response["data"] = data
+		response["data"] = data[0]
 	}
 
 	r.json(r.Ctx, response)

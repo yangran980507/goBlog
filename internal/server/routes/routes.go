@@ -65,8 +65,7 @@ func RegisterAPIRoutes(router *gin.Engine) {
 				// 获取用户登陆页面
 				auth.POST("/login", middlewares.GuestAuth(), uc.LoginUser)
 				// 刷新令牌
-				auth.POST("/login/refresh-token",
-					middlewares.JWTAuth(), uc.RefreshToken)
+				auth.POST("/login/refresh-token", uc.RefreshToken)
 			}
 
 			// 获取图书
@@ -83,6 +82,8 @@ func RegisterAPIRoutes(router *gin.Engine) {
 			{
 				// 显示购物车信息
 				cart.GET("", uc.ShowCarts)
+				// 加入购物车
+				cart.POST("/add/:id", uc.AddIntoCarts)
 			}
 
 		}

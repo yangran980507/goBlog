@@ -37,7 +37,7 @@ func GetCart(uid string) Cart {
 
 	cart := Cart{}
 	// 反序列化
-	if err := jsonPkg.UnMarshal(strCart, cart); err != nil {
+	if err := jsonPkg.UnMarshal(strCart, &cart); err != nil {
 		logger.LogIf(err)
 		return Cart{}
 	}
