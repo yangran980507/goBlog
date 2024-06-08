@@ -40,5 +40,5 @@ func InitializeErrorCode() {
 	Register(ErrTokenInvalid, 401, "Authorization Failed")
 	Register(ErrNotAdmin, 401, "Have no Authority to execute")
 	Register(ErrNotFound, 404, "Route Did Not Fund")
-	Register(ErrEmptyCart, 200, "Shopping Carts Is Empty")
+	Register(ErrEmptyCart, 200, "Shopping Carts is Empty")
 }

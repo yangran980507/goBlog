@@ -2,7 +2,6 @@
 package book
 
 import (
-	"blog/internal/server/models"
 	"blog/pkg/mysql"
 	"blog/pkg/paginator"
 	"github.com/gin-gonic/gin"
@@ -32,6 +31,13 @@ func GetByIsCommended() ([]*Book, error) {
 	return books, nil
 }
 
+// GetMoreBooks 获取更多图书
+func GetMoreBooks(ids []int64) ([]Book, int64) {
+	books := make([]Book, 10)
+	row := mysql.DB.Where(ids).Find(&books).RowsAffected
+	return books, row
+}
+
 // GetBooksAll 获取所有图书
 func GetBooksAll(c *gin.Context, count int) (books []Book, page paginator.Page) {
 
@@ -57,10 +63,10 @@ func GetCategories() ([]Category, int64) {
 }
 
 // GetIDFromAPI 获取接口中的 :id
-func GetIDFromAPI(c *gin.Context) models.BaseMode {
+func GetIDFromAPI(c *gin.Context) int64 {
 	// id 字符串
 	idStr := c.Param("id")
 
 	id, _ := strconv.Atoi(idStr)
-	return models.BaseMode{ID: uint(id)}
+	return int64(id)
 }

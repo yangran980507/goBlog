@@ -17,12 +17,15 @@ func (uc *UserController) ShowCarts(c *gin.Context) {
 	uid := CurrentUser(c)
 
 	cartModel := cart.GetCart(uid)
-	if cartModel.Books == nil || len(cartModel.Books) == 0 {
+	if len(cartModel.BookID) == 0 {
 		response.NewResponse(c, errcode.ErrEmptyCart.ParseCode()).WithResponse("空购物车")
 		return
 	}
+
+	books, _ := book.GetMoreBooks(cartModel.BookID)
+
 	response.NewResponse(c, errcode.ErrSuccess.ParseCode()).WithResponse(gin.H{
-		"cart": cartModel.Books,
+		"cart": books,
 	})
 }
 
@@ -34,24 +37,18 @@ func (uc *UserController) AddIntoCarts(c *gin.Context) {
 	// 获取购物车信息
 	cartModel := cart.GetCart(uid)
 
-	// 解析接口数据中 id
-	bookModel := book.Book{
-		BaseMode: book.GetIDFromAPI(c),
-	}
-
-	// 获取图书数据
-	bookMes, _ := bookModel.Get()
-
 	//
-	if len(cartModel.Books) > 50 {
+	if len(cartModel.BookID) > 50 {
 		// 失败返回失败信息
 		response.NewResponse(c, errcode.ErrUnknown.ParseCode()).
 			WithResponse("购物车已达上限")
 		return
 	}
 
+	bookID := book.GetIDFromAPI(c)
+
 	// 图书切片中添加 book
-	cartModel.Books = append(cartModel.Books, bookMes)
+	cartModel.BookID = append(cartModel.BookID, bookID)
 
 	// 重新存入
 	if !cartModel.SetCart(uid) {
@@ -77,19 +74,19 @@ func (uc *UserController) RemoveFromCarts(c *gin.Context) {
 	cartID, _ := strconv.Atoi(c.Param("cart_id"))
 
 	// 购物车切片长度
-	cartLength := len(cartModel.Books)
-	newCart := make([]book.Book, cartLength-1)
+	cartLength := len(cartModel.BookID)
+	newCart := make([]int64, cartLength-1)
 
 	switch cartID - 1 {
 	case 0:
-		newCart = cartModel.Books[1:]
+		newCart = cartModel.BookID[1:]
 	case cartLength - 1:
-		newCart = cartModel.Books[:cartLength-1]
+		newCart = cartModel.BookID[:cartLength-1]
 	default:
-		newCart = append(cartModel.Books[:cartID-1], cartModel.Books[cartID:]...)
+		newCart = append(cartModel.BookID[:cartID-1], cartModel.BookID[cartID:]...)
 	}
 
-	cartModel.Books = newCart
+	cartModel.BookID = newCart
 
 	// 重新存入
 	if !cartModel.SetCart(uid) {

@@ -2,7 +2,6 @@
 package cart
 
 import (
-	"blog/internal/server/models/book"
 	jsonPkg "blog/pkg/json"
 	"blog/pkg/logger"
 	"blog/pkg/redis"
@@ -11,7 +10,7 @@ import (
 // Cart 购物车模型
 type Cart struct {
 	// 购物车中的图书
-	Books []book.Book `json:"books"`
+	BookID []int64 `json:"book_id"`
 	// 购物车更新时间
 	UpdateTime int64 `json:"update_time"`
 }

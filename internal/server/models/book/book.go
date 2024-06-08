@@ -59,7 +59,7 @@ func (book *Book) Delete() int64 {
 	return row*/
 }
 
-// Get 显示图书
+// Get 获取图书
 func (book *Book) Get() (Book, int64) {
 	bookModel := Book{}
 	row := mysql.DB.First(&bookModel, book.ID).RowsAffected
