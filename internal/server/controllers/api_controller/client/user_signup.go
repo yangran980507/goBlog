@@ -40,13 +40,14 @@ func (uc *UserController) SignupUser(c *gin.Context) {
 		// 签发令牌
 		token := jwt.NewJWT().IssueToken(userinfo)
 		// 返回成功码，令牌及用户数据
-		response.NewResponse(c, errcode.ErrSuccess.ParseCode()).WithResponse(
+		response.NewResponse(c, errcode.ErrSuccess).WithResponse(
 			gin.H{
 				"token": token,
 				"user":  userModel,
 			})
 	} else {
 		// 创建失败，返回失败信息
-		response.NewResponse(c, errcode.ErrTokenInvalid.ParseCode()).WithResponse("创建用户失败")
+		response.NewResponse(c, errcode.ErrTokenInvalid, "注册失败").
+			WithResponse()
 	}
 }

@@ -5,7 +5,6 @@ import (
 	"blog/pkg/mysql"
 	"blog/pkg/paginator"
 	"github.com/gin-gonic/gin"
-	"strconv"
 )
 
 // GetByIsNewBook 查询为新书项的图书
@@ -60,13 +59,4 @@ func GetCategories() ([]Category, int64) {
 	row := mysql.DB.Preload("Books").
 		Order("category_id asc").Find(&categories).RowsAffected
 	return categories, row
-}
-
-// GetIDFromAPI 获取接口中的 :id
-func GetIDFromAPI(c *gin.Context) int64 {
-	// id 字符串
-	idStr := c.Param("id")
-
-	id, _ := strconv.Atoi(idStr)
-	return int64(id)
 }

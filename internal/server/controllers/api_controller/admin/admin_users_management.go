@@ -15,7 +15,7 @@ func (ac *AdminController) ShowUsers(c *gin.Context) {
 	users := make([]user.User, 6)
 	users, page := user.Paginate(c, 6)
 
-	response.NewResponse(c, errcode.ErrSuccess.ParseCode()).WithResponse(gin.H{
+	response.NewResponse(c, errcode.ErrSuccess).WithResponse(gin.H{
 		"users": users,
 		"page":  page,
 	})
@@ -28,11 +28,10 @@ func (ac *AdminController) ManageFreezeUser(c *gin.Context) {
 	if err := c.ShouldBind(&person); err != nil {
 		// 绑定验证失败
 		logger.LogIf(err)
-		response.NewResponse(c, errcode.ErrBind.ParseCode()).
-			WithResponse("请求失败，请稍后再试")
+		response.NewResponse(c, errcode.ErrBind, "请求失败，请稍后再试").
+			WithResponse()
 		return
 	}
-
 	userModel := user.User{
 		LoginName: person.LoginName,
 		Freeze:    person.IsFreezing,
@@ -42,8 +41,8 @@ func (ac *AdminController) ManageFreezeUser(c *gin.Context) {
 	if err != nil {
 		// 更新失败
 		logger.LogIf(err)
-		response.NewResponse(c, errcode.ErrUnknown.ParseCode()).
-			WithResponse("更新失败，请稍后再试")
+		response.NewResponse(c, errcode.ErrUnknown, "更新失败，请稍后再试").
+			WithResponse()
 		return
 	}
 

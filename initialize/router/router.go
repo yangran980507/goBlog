@@ -41,7 +41,7 @@ func setupNoRoute(router *gin.Engine) {
 		if strings.Contains(acceptString, "text/html_controller") {
 			c.String(404, "页面返回404")
 		} else {
-			response.NewResponse(c, errcode.ErrNotFound.ParseCode()).WithResponse()
+			response.NewResponse(c, errcode.ErrNotFound).WithResponse()
 		}
 	})
 }

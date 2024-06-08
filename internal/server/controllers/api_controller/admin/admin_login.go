@@ -7,6 +7,7 @@ import (
 	"blog/pkg/errcode"
 	"blog/pkg/jwt"
 	"blog/pkg/response"
+	"errors"
 	"github.com/gin-gonic/gin"
 )
 
@@ -27,12 +28,18 @@ func (ac *AdminController) LoginAdmin(c *gin.Context) {
 
 	if err != nil {
 		// 登陆失败
-		response.NewResponse(c, errcode.ErrTokenInvalid.ParseCode()).
-			WithResponse("登陆失败:" + err.Error())
+		switch {
+		case errors.Is(err, errcode.ErrAccountAbsent):
+			response.NewResponse(c, errcode.ErrAccountAbsent, "账户不存在").
+				WithResponse()
+		case errors.Is(err, errcode.ErrPassWord):
+			response.NewResponse(c, errcode.ErrPassWord, "密码输入错误").
+				WithResponse()
+		}
 	} else {
 		if allow := userModel.IsManager; !allow {
-			response.NewResponse(c, errcode.ErrTokenInvalid.ParseCode()).
-				WithResponse("请使用管理员账号登录!")
+			response.NewResponse(c, errcode.ErrTokenInvalid, "请使用管理员账号登录!").
+				WithResponse()
 		} else {
 			// 创建 jwt 鉴权结构体实例
 			userinfo := jwt.UserInfo{
@@ -42,7 +49,7 @@ func (ac *AdminController) LoginAdmin(c *gin.Context) {
 			// 签发令牌
 			token := jwt.NewJWT().IssueToken(userinfo)
 			// 返回成功码，令牌及用户数据
-			response.NewResponse(c, errcode.ErrSuccess.ParseCode()).WithResponse(
+			response.NewResponse(c, errcode.ErrSuccess).WithResponse(
 				gin.H{
 					"token": token,
 				})

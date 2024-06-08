@@ -5,13 +5,13 @@ import (
 	"blog/internal/server/models"
 	"blog/internal/server/models/book"
 	"blog/internal/server/requests"
+	"blog/pkg/app"
 	"blog/pkg/errcode"
 	"blog/pkg/helps"
 	"blog/pkg/helps/book_helps"
 	"blog/pkg/logger"
 	"blog/pkg/response"
 	"github.com/gin-gonic/gin"
-	"strconv"
 	"time"
 )
 
@@ -42,11 +42,11 @@ func (ac *AdminController) BookStorage(c *gin.Context) {
 
 	if err != nil {
 		logger.LogIf(err)
-		response.NewResponse(c, errcode.ErrUnknown.ParseCode()).
-			WithResponse("入库失败，请稍后重试")
+		response.NewResponse(c, errcode.ErrServer, "服务器错误：入库失败").
+			WithResponse()
 	} else {
-		response.NewResponse(c, errcode.ErrSuccess.ParseCode()).
-			WithResponse("入库成功")
+		response.NewResponse(c, errcode.ErrSuccess, "入库成功").
+			WithResponse()
 	}
 }
 
@@ -55,7 +55,7 @@ func (ac *AdminController) GetBooksAllByPaginator(c *gin.Context) {
 
 	books := make([]book.Book, 10)
 	books, page := book.GetBooksAll(c, 10)
-	response.NewResponse(c, errcode.ErrSuccess.ParseCode()).WithResponse(gin.H{
+	response.NewResponse(c, errcode.ErrSuccess).WithResponse(gin.H{
 		"books": books,
 		"page":  page,
 	})
@@ -63,13 +63,9 @@ func (ac *AdminController) GetBooksAllByPaginator(c *gin.Context) {
 
 // DeleteBook 删除库中图书
 func (ac *AdminController) DeleteBook(c *gin.Context) {
+
 	// 解析接口数据
-	id, err := strconv.Atoi(c.Param("id"))
-	if err != nil {
-		logger.LogIf(err)
-		response.NewResponse(c, errcode.ErrUnknown.ParseCode()).WithResponse("删除失败")
-		return
-	}
+	id := app.GetIDFromAPI(c, "id")
 
 	// 图书编号实例
 	bookModel := book.Book{
@@ -78,21 +74,19 @@ func (ac *AdminController) DeleteBook(c *gin.Context) {
 
 	row := bookModel.Delete()
 	if row == 1 {
-		response.NewResponse(c, errcode.ErrSuccess.ParseCode()).WithResponse("删除成功")
+		response.NewResponse(c, errcode.ErrSuccess, "删除成功").
+			WithResponse()
 	} else {
-		response.NewResponse(c, errcode.ErrUnknown.ParseCode()).WithResponse("删除失败")
+		response.NewResponse(c, errcode.ErrServer, "服务器错误：删除失败").
+			WithResponse()
 	}
 }
 
 // GetBook 获取图书信息
 func (ac *AdminController) GetBook(c *gin.Context) {
 
-	// 解析接口
-	id, err := strconv.Atoi(c.Param("id"))
-	if err != nil {
-		logger.LogIf(err)
-		return
-	}
+	// 解析接口数据
+	id := app.GetIDFromAPI(c, "id")
 
 	// 图书编号实例
 	bookModel := book.Book{
@@ -101,12 +95,12 @@ func (ac *AdminController) GetBook(c *gin.Context) {
 
 	b, row := bookModel.Get()
 	if row == 1 {
-		response.NewResponse(c, errcode.ErrSuccess.ParseCode()).WithResponse(gin.H{
+		response.NewResponse(c, errcode.ErrSuccess).WithResponse(gin.H{
 			"book": b,
 		})
 	} else {
-		response.NewResponse(c, errcode.ErrUnknown.ParseCode()).
-			WithResponse("服务器出错，请稍后重试")
+		response.NewResponse(c, errcode.ErrServer, "服务器出错，请稍后重试").
+			WithResponse()
 	}
 
 }
@@ -119,13 +113,8 @@ func (ac *AdminController) BookUpdate(c *gin.Context) {
 		return
 	}
 
-	// 解析接口
-	id, err := strconv.Atoi(c.Param("id"))
-	if err != nil {
-		logger.LogIf(err)
-		response.NewResponse(c, errcode.ErrUnknown.ParseCode()).WithResponse("修改失败")
-		return
-	}
+	// 解析接口数据
+	id := app.GetIDFromAPI(c, "id")
 
 	bookModel := book.Book{
 		BaseMode:     models.BaseMode{ID: uint(id)},
@@ -148,12 +137,13 @@ func (ac *AdminController) BookUpdate(c *gin.Context) {
 	// 判断类型是否修改
 	if bookOld.CategoryName != bookModel.CategoryName {
 		// 修改,判断类型是否存在
-		_, err = bookModel.GetCategory()
+		_, err := bookModel.GetCategory()
 		if err != nil {
 			// 类型不存在，创建新类型
 			err = bookModel.AddCategory()
 			if err != nil {
-				response.NewResponse(c, errcode.ErrUnknown.ParseCode()).WithResponse("修改失败")
+				response.NewResponse(c, errcode.ErrServer, "服务器出错：修改失败").
+					WithResponse()
 				return
 			}
 		}
@@ -162,16 +152,18 @@ func (ac *AdminController) BookUpdate(c *gin.Context) {
 	row = bookModel.Update()
 
 	if row == 1 {
-		response.NewResponse(c, errcode.ErrSuccess.ParseCode()).
-			WithResponse("修改成功")
+		response.NewResponse(c, errcode.ErrSuccess, "修改成功").
+			WithResponse()
 	} else {
 
-		response.NewResponse(c, errcode.ErrSuccess.ParseCode()).
-			WithResponse("未作任何修改")
+		response.NewResponse(c, errcode.ErrSuccess, "未作任何修改").
+			WithResponse()
 	}
 
+	// 获取修改前分类
 	categoryModel, _ := bookOld.GetCategory()
 	if bookOld.CountAssociation(&categoryModel) {
+		// 删除修改前分类
 		categoryModel.DeleteCategory()
 	}
 }

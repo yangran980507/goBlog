@@ -5,11 +5,11 @@ import (
 	"blog/internal/server/models"
 	"blog/internal/server/models/notice"
 	"blog/internal/server/requests"
+	"blog/pkg/app"
 	"blog/pkg/errcode"
 	"blog/pkg/logger"
 	"blog/pkg/response"
 	"github.com/gin-gonic/gin"
-	"strconv"
 	"time"
 )
 
@@ -17,7 +17,7 @@ import (
 func (ac *AdminController) NoticeGet(c *gin.Context) {
 	notices, rows := notice.Get()
 	if rows != 0 {
-		response.NewResponse(c, errcode.ErrSuccess.ParseCode()).WithResponse(gin.H{
+		response.NewResponse(c, errcode.ErrSuccess).WithResponse(gin.H{
 			"notices": notices,
 		})
 	}
@@ -29,8 +29,8 @@ func (ac *AdminController) NoticeCreate(c *gin.Context) {
 	if err := c.ShouldBind(&request); err != nil {
 		// 绑定验证失败
 		logger.LogIf(err)
-		response.NewResponse(c, errcode.ErrBind.ParseCode()).
-			WithResponse("发布失败，请稍后再试")
+		response.NewResponse(c, errcode.ErrBind, "发布失败，请稍后再试").
+			WithResponse()
 		return
 	}
 
@@ -45,23 +45,20 @@ func (ac *AdminController) NoticeCreate(c *gin.Context) {
 
 	if noticeModel.ID > 0 {
 
-		response.NewResponse(c, errcode.ErrSuccess.ParseCode()).WithResponse(gin.H{
+		response.NewResponse(c, errcode.ErrSuccess).WithResponse(gin.H{
 			"notice": noticeModel,
 		})
 	} else {
-		response.NewResponse(c, errcode.ErrSuccess.ParseCode()).
+		response.NewResponse(c, errcode.ErrSuccess).
 			WithResponse("发布出错，请稍后再试")
 	}
 }
 
 // NoticeDelete 删除公告
 func (ac *AdminController) NoticeDelete(c *gin.Context) {
-	id, err := strconv.Atoi(c.Param("id"))
-	if err != nil {
-		logger.LogIf(err)
-		response.NewResponse(c, errcode.ErrUnknown.ParseCode()).WithResponse("删除失败")
-		return
-	}
+	// 解析接口数据
+	id := app.GetIDFromAPI(c, "id")
+
 	noticeModel := notice.Notice{
 		BaseMode: models.BaseMode{ID: uint(id)},
 	}
@@ -69,10 +66,10 @@ func (ac *AdminController) NoticeDelete(c *gin.Context) {
 	row := noticeModel.Delete()
 
 	if row == 1 {
-		response.NewResponse(c, errcode.ErrSuccess.ParseCode()).
-			WithResponse("删除成功")
+		response.NewResponse(c, errcode.ErrSuccess, "删除成功").
+			WithResponse()
 	} else {
-		response.NewResponse(c, errcode.ErrUnknown.ParseCode()).
-			WithResponse("删除失败，请稍后重试")
+		response.NewResponse(c, errcode.ErrServer, "删除失败，请稍后重试").
+			WithResponse()
 	}
 }

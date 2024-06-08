@@ -6,7 +6,9 @@ import (
 	"blog/pkg/auth"
 	"blog/pkg/errcode"
 	"blog/pkg/jwt"
+	"blog/pkg/logger"
 	"blog/pkg/response"
+	"errors"
 	"github.com/gin-gonic/gin"
 )
 
@@ -27,13 +29,21 @@ func (uc *UserController) LoginUser(c *gin.Context) {
 	}
 	userModel, err := loginInfo.Login()
 	if err != nil {
+
 		// 登陆失败
-		response.NewResponse(c, errcode.ErrTokenInvalid.ParseCode()).
-			WithResponse("登陆失败:" + err.Error())
+		switch {
+		case errors.Is(err, errcode.ErrAccountAbsent):
+			response.NewResponse(c, errcode.ErrAccountAbsent, "账户不存在").
+				WithResponse()
+		case errors.Is(err, errcode.ErrPassWord):
+			response.NewResponse(c, errcode.ErrPassWord, "密码输入错误").
+				WithResponse()
+		}
+
 	} else {
 		if allow := userModel.IsManager; allow {
-			response.NewResponse(c, errcode.ErrTokenInvalid.ParseCode()).
-				WithResponse("请使用普通用户账号登录!")
+			response.NewResponse(c, errcode.ErrNotAdmin, "请使用普通用户账号登录!").
+				WithResponse()
 		} else {
 			// 创建 jwt 鉴权结构体实例
 			userinfo := jwt.UserInfo{
@@ -43,7 +53,7 @@ func (uc *UserController) LoginUser(c *gin.Context) {
 			// 签发令牌
 			token := jwt.NewJWT().IssueToken(userinfo)
 			// 返回成功码，令牌及用户数据
-			response.NewResponse(c, errcode.ErrSuccess.ParseCode()).WithResponse(
+			response.NewResponse(c, errcode.ErrSuccess).WithResponse(
 				gin.H{
 					"user":  userModel,
 					"token": token,
@@ -57,11 +67,19 @@ func (uc *UserController) RefreshToken(c *gin.Context) {
 	token, err := jwt.NewJWT().RefreshToken(c)
 
 	if err != nil {
-		response.NewResponse(c, errcode.ErrTokenInvalid.ParseCode()).WithResponse(
-			"令牌刷新无效:" + err.Error())
+		logger.LogIf(err)
+		if errors.Is(err, errcode.ErrTokenTimeOut) {
+			response.NewResponse(c, errcode.ErrTokenTimeOut).WithResponse(
+				"令牌刷新无效:" + err.Error())
+			return
+		}
+
+		response.NewResponse(c, errcode.ErrTokenInvalid, "令牌刷新无效:"+err.Error()).
+			WithResponse()
+		return
 	} else {
 		// 返回成功码，令牌及用户数据
-		response.NewResponse(c, errcode.ErrSuccess.ParseCode()).WithResponse(
+		response.NewResponse(c, errcode.ErrSuccess).WithResponse(
 			gin.H{
 				"token": token,
 			})

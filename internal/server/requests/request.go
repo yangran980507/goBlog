@@ -3,6 +3,7 @@ package requests
 
 import (
 	"blog/pkg/errcode"
+	"blog/pkg/logger"
 	"blog/pkg/response"
 	"github.com/gin-gonic/gin"
 	"github.com/thedevsaddam/govalidator"
@@ -31,7 +32,8 @@ func BindAndValid(c *gin.Context, object interface{}, handler validatorFunc) boo
 
 	if err := c.ShouldBind(object); err != nil {
 		// 如果绑定数据失败
-		response.NewResponse(c, errcode.ErrBind.ParseCode()).WithResponse()
+		logger.LogIf(err)
+		return false
 	}
 
 	// 调用验证函数验证接口数据
@@ -39,7 +41,7 @@ func BindAndValid(c *gin.Context, object interface{}, handler validatorFunc) boo
 
 	if len(errs) > 0 {
 		// 发生错误，返回验证错误信息
-		response.NewResponse(c, errcode.ErrValidation.ParseCode()).WithResponse(errs)
+		response.NewResponse(c, errcode.ErrValidation).WithResponse(errs)
 		return false
 	}
 

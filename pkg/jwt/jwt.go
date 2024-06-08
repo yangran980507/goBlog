@@ -4,6 +4,7 @@ package jwt
 import (
 	"blog/global"
 	"blog/pkg/app"
+	"blog/pkg/errcode"
 	"blog/pkg/logger"
 	"errors"
 	"github.com/gin-gonic/gin"
@@ -149,5 +150,5 @@ func (jwt *JWT) RefreshToken(c *gin.Context) (string, error) {
 		claims.RegisteredClaims.ExpiresAt = jwtpkg.NewNumericDate(jwt.expireTime())
 		return jwt.generateToken(claims)
 	}
-	return "", errors.New("令牌已过最大刷新时间")
+	return "", errcode.ErrTokenTimeOut
 }

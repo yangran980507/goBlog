@@ -13,7 +13,7 @@ func (uc *UserController) GetBookByCategory(c *gin.Context) {
 	var categories []book.Category
 	categories, row := book.GetCategories()
 	if row != 0 {
-		response.NewResponse(c, errcode.ErrSuccess.ParseCode()).WithResponse(gin.H{
+		response.NewResponse(c, errcode.ErrSuccess).WithResponse(gin.H{
 			"categories": categories,
 		})
 	}

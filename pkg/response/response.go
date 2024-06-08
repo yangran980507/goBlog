@@ -8,36 +8,52 @@ import (
 
 // Response 响应控制器
 type Response struct {
-	Ctx   *gin.Context
-	Coder errcode.Coder
+	Ctx     *gin.Context
+	ErrCode errcode.ErrorCode
+	Data    any
 }
 
 // NewResponse Response 实例
-func NewResponse(c *gin.Context, coder errcode.Coder) *Response {
-	return &Response{c, coder}
+func NewResponse(c *gin.Context, code errcode.CodeInt, details ...string) *Response {
+
+	// 解析错误码
+	errCode := code.ParseCode()
+
+	// 如果 details 不为空
+	if len(details) != 0 {
+		errCode.WithDetails(details[0])
+	}
+
+	// 返回 Response 实例
+	return &Response{
+		Ctx:     c,
+		ErrCode: errCode}
 }
 
-// 返回状态码/响应体
-func (r *Response) json(c *gin.Context, data interface{}) {
-
-	c.JSON(r.Coder.HTTPStatus(), data)
+// Json 返回 JSON
+func (r *Response) json() {
+	r.Ctx.JSON(r.ErrCode.HttpStatus, r.Data)
 }
 
-// WithResponse 返回响应内容
+// WithResponse 返回响应
 func (r *Response) WithResponse(data ...interface{}) {
 
+	// 默认返回错误码 err_code 错误信息 message
 	response := gin.H{
-		"err_code": r.Coder.Code(),
-		"message":  r.Coder.Message(),
+		"err_code": r.ErrCode.Code,
+		"message":  r.ErrCode.Message,
 	}
 
-	if len(r.Coder.Details()) > 0 {
-		response["details"] = r.Coder.Details()
+	// 如果详细信息存在
+	if r.ErrCode.Details != "" {
+		response["details"] = r.ErrCode.Details
 	}
 
+	// 数据库数据不为空
 	if len(data) != 0 {
 		response["data"] = data[0]
 	}
 
-	r.json(r.Ctx, response)
+	r.Data = response
+	r.json()
 }

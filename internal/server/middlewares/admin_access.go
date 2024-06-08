@@ -15,8 +15,8 @@ func AdminAuth() gin.HandlerFunc {
 
 		if !userModel.IsManager {
 			// 不是 管理员份身份
-			response.NewResponse(c, errcode.ErrNotAdmin.ParseCode()).
-				WithResponse("非管理员身份没有该权限")
+			response.NewResponse(c, errcode.ErrNotAdmin, "非管理员身份没有该权限").
+				WithResponse()
 			c.Abort()
 		}
 	}
