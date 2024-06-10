@@ -2,6 +2,6 @@
 package requests
 
 type NoticeValidation struct {
-	Title   string `json:"title" form:"title"`
-	Content string `json:"content" form:"title"`
+	Title   string `json:"title" form:"title" binding:"required"`
+	Content string `json:"content" form:"title" binding:"required"`
 }

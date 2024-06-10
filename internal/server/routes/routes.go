@@ -143,6 +143,7 @@ func RegisterAPIRoutes(router *gin.Engine) {
 
 			// 公告管理路由组
 			noticeManage := admin.Group("/notices")
+			noticeManage.Use(middlewares.JWTAuth(), middlewares.AdminAuth())
 			{
 				// 显示公告
 				noticeManage.GET("", ac.NoticeGet)
@@ -150,6 +151,18 @@ func RegisterAPIRoutes(router *gin.Engine) {
 				noticeManage.POST("/notice-release", ac.NoticeCreate)
 				// 删除公告
 				noticeManage.DELETE("/delete/:id", ac.NoticeDelete)
+			}
+
+			pollManage := admin.Group("/polls")
+			pollManage.Use(middlewares.JWTAuth(), middlewares.AdminAuth())
+			{
+				// 显示投票项，投票数
+				pollManage.GET("", ac.GetPoll)
+				// 设置投票项
+				pollManage.POST("/create", ac.SetPoll)
+				// 删除投票项
+				pollManage.DELETE("/:option_name/delete", ac.DeletePoll)
+
 			}
 		}
 	}

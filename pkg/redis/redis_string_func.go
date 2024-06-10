@@ -1,4 +1,4 @@
-// Package redis redis操作函数
+// Package redis string 操作函数
 package redis
 
 import (

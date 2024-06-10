@@ -23,7 +23,7 @@ func (c *Cart) SetCart(uid string) bool {
 		logger.LogIf(err)
 		return false
 	}
-	if !redis.Redis.Set(uid+":cart", strCart, -1) {
+	if !redis.CartRedis.Set(uid+":cart", strCart, -1) {
 		return false
 	}
 	return true
@@ -32,7 +32,7 @@ func (c *Cart) SetCart(uid string) bool {
 // GetCart 读取购物车
 func GetCart(uid string) Cart {
 	// 获取键值
-	strCart := redis.Redis.Get(uid + ":cart")
+	strCart := redis.CartRedis.Get(uid + ":cart")
 
 	cart := Cart{}
 	// 反序列化
@@ -46,7 +46,7 @@ func GetCart(uid string) Cart {
 // DelCart 清空购物车
 func DelCart(uid string) bool {
 
-	if !redis.Redis.Del(uid + ":cart") {
+	if !redis.CartRedis.Del(uid + ":cart") {
 		return false
 	}
 

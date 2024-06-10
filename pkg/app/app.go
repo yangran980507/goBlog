@@ -25,3 +25,10 @@ func GetIDFromAPI(c *gin.Context, key string) int64 {
 	id, _ := strconv.Atoi(idStr)
 	return int64(id)
 }
+
+// GetStrFromAPI 获取接口中的 :id
+func GetStrFromAPI(c *gin.Context, key string) string {
+	// id 字符串
+	val := c.Param(key)
+	return val
+}
