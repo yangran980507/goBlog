@@ -90,6 +90,10 @@ func RegisterAPIRoutes(router *gin.Engine) {
 				cart.DELETE("/flush", uc.FlushCarts)
 			}
 
+			notice := client.Group("/notices")
+			{
+				notice.GET("", uc.NoticeGet)
+			}
 		}
 
 		// 管理员路由组
