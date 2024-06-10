@@ -31,13 +31,13 @@ type Book struct {
 	// 入库时间
 	InTime int64 `json:"in_time,omitempty"`
 	// 是否新书 ？
-	IsNewBook bool `json:"is_new_book,omitempty"`
+	IsNewBook bool `json:"-"`
 	// 是否推荐 ？
-	IsCommended bool `json:"is_commended,omitempty"`
+	IsCommended bool `json:"-"`
 	// 库存
-	Quantity int `json:"quantity,omitempty"`
+	Quantity int `json:"-"`
 	// 已售
-	Selled int `json:"selled,omitempty"`
+	Sold int `json:"sold,omitempty"`
 }
 
 // Create 创建图书

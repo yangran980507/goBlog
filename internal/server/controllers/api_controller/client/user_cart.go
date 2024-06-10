@@ -23,7 +23,7 @@ func (uc *UserController) ShowCarts(c *gin.Context) {
 		return
 	}
 
-	books, _ := book.GetMoreBooks(cartModel.BookID)
+	books, _ := book.GetBooksBySlice(cartModel.BookID)
 
 	response.NewResponse(c, errcode.ErrSuccess).WithResponse(gin.H{
 		"cart": books,

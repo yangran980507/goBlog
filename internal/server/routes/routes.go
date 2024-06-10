@@ -60,20 +60,24 @@ func RegisterAPIRoutes(router *gin.Engine) {
 			// 用户鉴权路由组
 			auth := client.Group("/auth")
 			{
-				// 获取用户注册页面
+				// 用户注册
 				auth.POST("/signup", middlewares.GuestAuth(), uc.SignupUser)
-				// 获取用户登陆页面
+				// 用户登陆
 				auth.POST("/login", middlewares.GuestAuth(), uc.LoginUser)
 				// 刷新令牌
 				auth.POST("/login/refresh-token", uc.RefreshToken)
 			}
 
 			// 获取图书
-			collection := client.Group("")
+			collection := client.Group("/books")
 			collection.Use(middlewares.JWTAuth())
 			{
 				// 通过分类获取图书
-				collection.GET("/get-book-by-category", uc.GetBookByCategory)
+				collection.GET("/by-category", uc.GetBookByCategory)
+				// 通过新书排行获取图书
+				collection.GET("/by-is_new_book", uc.GetBookByIsNewBook)
+				// 通过销售排行获取图书
+				collection.GET("/by-sold", uc.GetBookBySold)
 			}
 
 			// 购物车相关

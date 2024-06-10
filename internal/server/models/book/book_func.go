@@ -8,32 +8,40 @@ import (
 )
 
 // GetByIsNewBook 查询为新书项的图书
-func GetByIsNewBook() ([]Book, error) {
+func GetByIsNewBook(c *gin.Context, count int) (books []Book, page paginator.Page) {
 
-	var books []Book
-	if err := mysql.DB.Model(Book{}).
-		Where("isNewBook = ?", true).Order("in_time desc").
-		Find(&books).Error; err != nil {
-		return nil, err
-	}
-	return books, nil
+	page = paginator.Paginate(
+		c,
+		mysql.DB.Model(Book{}).Where("is_new_book = ?", true),
+		"client",
+		"books/by-is_new_book",
+		&books,
+		count,
+		"in_time",
+		"desc")
+
+	return
 }
 
-// GetByIsCommended 查询为推荐项的图书
-func GetByIsCommended() ([]Book, error) {
+// GetBySold 查询销售排行图书
+func GetBySold(c *gin.Context, count int) (books []Book, page paginator.Page) {
 
-	var books []Book
-	if err := mysql.DB.Model(Book{}).
-		Where("isCommended = ?", true).Order("in_time desc").
-		Find(&books).Error; err != nil {
-		return nil, err
-	}
-	return books, nil
+	page = paginator.Paginate(
+		c,
+		mysql.DB.Model(Book{}),
+		"client",
+		"books/by-sold",
+		&books,
+		count,
+		"sold",
+		"desc")
+
+	return
 }
 
-// GetMoreBooks 获取更多图书
-func GetMoreBooks(ids []int64) ([]Book, int64) {
-	books := make([]Book, 10)
+// GetBooksBySlice 通过 id 切片获取图书
+func GetBooksBySlice(ids []int64) ([]Book, int64) {
+	var books []Book
 	row := mysql.DB.Where(ids).Find(&books).RowsAffected
 	return books, row
 }
@@ -45,7 +53,7 @@ func GetBooksAll(c *gin.Context, count int) (books []Book, page paginator.Page) 
 		c,
 		mysql.DB.Model(Book{}),
 		"admin",
-		"book",
+		"books",
 		&books,
 		count,
 		"in_time",
