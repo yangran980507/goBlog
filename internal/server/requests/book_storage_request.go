@@ -28,9 +28,9 @@ type BookStorageValidation struct {
 	// 库存
 	Quantity int `json:"quantity" valid:"quantity"`
 	// 是否新书 ？
-	IsNewBook string `json:"is_new_book" valid:"is_new_book"`
+	IsNewBook bool `json:"is_new_book" valid:"is_new_book"`
 	// 是否推荐 ？
-	IsCommended string `json:"is_commended" valid:"is_commended"`
+	IsCommended bool `json:"is_commended" valid:"is_commended"`
 }
 
 // BookStorageValidate 图书入库验证函数
@@ -47,8 +47,6 @@ func BookStorageValidate(data interface{}) map[string][]string {
 		"pdate":         []string{"required"},
 		"quantity":      []string{"required"},
 		"pic_url":       []string{"required"},
-		"is_new_book":   []string{"required"},
-		"is_commended":  []string{"required"},
 	}
 
 	// 返回错误信息
@@ -66,8 +64,6 @@ func BookStorageValidate(data interface{}) map[string][]string {
 		"pdate":         []string{"required: 发行日期为必填"},
 		"pic_url":       []string{"required: 图片封面为必填"},
 		"quantity":      []string{"required: 库存为必填"},
-		"is_new_book":   []string{"required: 新书选项为必选"},
-		"is_commended":  []string{"required: 推荐选项为必选"},
 	}
 
 	// 传入设置的验证规则，错误消息参数，返回错误信息
@@ -95,9 +91,9 @@ type BookUpdateValidation struct {
 	// 库存
 	Quantity int `json:"quantity" valid:"quantity"`
 	// 是否新书 ？
-	IsNewBook string `json:"is_new_book" valid:"is_new_book"`
+	IsNewBook bool `json:"is_new_book" valid:"is_new_book"`
 	// 是否推荐 ？
-	IsCommended string `json:"is_commended" valid:"isCommended"`
+	IsCommended bool `json:"is_commended" valid:"isCommended"`
 }
 
 // BookUpdateValidate 图书修改验证函数
@@ -113,8 +109,6 @@ func BookUpdateValidate(data interface{}) map[string][]string {
 		"pdate":         []string{"required"},
 		"pic_url":       []string{"required"},
 		"quantity":      []string{"required"},
-		"is_new_book":   []string{"required"},
-		"is_commended":  []string{"required"},
 	}
 
 	// 返回错误信息
@@ -129,8 +123,6 @@ func BookUpdateValidate(data interface{}) map[string][]string {
 		"pdate":         []string{"required: 发行日期为必填"},
 		"pic_url":       []string{"required: 图片封面为必填"},
 		"quantity":      []string{"required: 库存为必填"},
-		"is_new_book":   []string{"required: 新书选项为必选"},
-		"is_commended":  []string{"required: 推荐选项为必选"},
 	}
 
 	// 传入设置的验证规则，错误消息参数，返回错误信息

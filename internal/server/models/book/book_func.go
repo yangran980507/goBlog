@@ -8,22 +8,23 @@ import (
 )
 
 // GetByIsNewBook 查询为新书项的图书
-func GetByIsNewBook() ([]*Book, error) {
+func GetByIsNewBook() ([]Book, error) {
 
-	var books []*Book
+	var books []Book
 	if err := mysql.DB.Model(Book{}).
-		Where("isNewBook = ?", true).Find(&books).Error; err != nil {
+		Where("isNewBook = ?", true).Order("in_time desc").
+		Find(&books).Error; err != nil {
 		return nil, err
 	}
 	return books, nil
 }
 
 // GetByIsCommended 查询为推荐项的图书
-func GetByIsCommended() ([]*Book, error) {
+func GetByIsCommended() ([]Book, error) {
 
-	var books []*Book
+	var books []Book
 	if err := mysql.DB.Model(Book{}).
-		Where("isCommended = ?", true).
+		Where("isCommended = ?", true).Order("in_time desc").
 		Find(&books).Error; err != nil {
 		return nil, err
 	}

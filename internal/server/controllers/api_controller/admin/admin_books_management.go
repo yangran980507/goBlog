@@ -8,7 +8,6 @@ import (
 	"blog/pkg/app"
 	"blog/pkg/errcode"
 	"blog/pkg/helps"
-	"blog/pkg/helps/book_helps"
 	"blog/pkg/logger"
 	"blog/pkg/response"
 	"github.com/gin-gonic/gin"
@@ -34,8 +33,8 @@ func (ac *AdminController) BookStorage(c *gin.Context) {
 		PicURL:       "../../assets/images/" + request.PicURL,
 		InTime:       time.Now().Unix(),
 		Quantity:     request.Quantity,
-		IsNewBook:    book_helps.RequestStrToBool(request.IsNewBook),
-		IsCommended:  book_helps.RequestStrToBool(request.IsCommended),
+		IsNewBook:    request.IsNewBook,
+		IsCommended:  request.IsCommended,
 	}
 
 	err := bookModel.Create()
@@ -127,8 +126,8 @@ func (ac *AdminController) BookUpdate(c *gin.Context) {
 		Pdate:        helps.StrToTimeUnix(request.Pdate),
 		PicURL:       "../../assets/images/" + request.PicURL,
 		Quantity:     request.Quantity,
-		IsNewBook:    book_helps.RequestStrToBool(request.IsNewBook),
-		IsCommended:  book_helps.RequestStrToBool(request.IsCommended),
+		IsNewBook:    request.IsNewBook,
+		IsCommended:  request.IsCommended,
 	}
 
 	var row int64
