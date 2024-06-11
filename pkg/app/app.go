@@ -3,6 +3,7 @@ package app
 
 import (
 	"blog/global"
+	"blog/internal/server/models/user"
 	"github.com/gin-gonic/gin"
 	"strconv"
 )
@@ -31,4 +32,12 @@ func GetStrFromAPI(c *gin.Context, key string) string {
 	// id 字符串
 	val := c.Param(key)
 	return val
+}
+
+// CurrentUser 获取当前用户
+func CurrentUser(c *gin.Context) string {
+	// 获取当前用户
+	val := c.MustGet("current_user")
+	userModel := val.(user.User)
+	return strconv.Itoa(int(userModel.ID))
 }

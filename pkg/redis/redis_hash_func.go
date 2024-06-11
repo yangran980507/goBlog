@@ -45,3 +45,13 @@ func (rds *RedisClient) HIncrBy(key string, field string) bool {
 	}
 	return true
 }
+
+// HExists 判断字段是否存在
+func (rds *RedisClient) HExists(key string, field string) bool {
+
+	answer, err := rds.Client.HExists(rds.Ctx, key, field).Result()
+	if err != nil {
+		logger.LogIf(err)
+	}
+	return answer
+}

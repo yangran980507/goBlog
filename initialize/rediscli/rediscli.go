@@ -27,4 +27,12 @@ func setupRedis() {
 		global.RedisSetting.Pw,
 		global.RedisSetting.PollDatabase,
 	)
+
+	// 连接问题数据库
+	redis.ConnectQuestion(
+		fmt.Sprintf("%v:%v", global.RedisSetting.Host, global.RedisSetting.Port),
+		global.RedisSetting.User,
+		global.RedisSetting.Pw,
+		global.RedisSetting.QuestionDatabase,
+	)
 }

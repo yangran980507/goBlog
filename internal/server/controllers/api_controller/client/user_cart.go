@@ -1,4 +1,4 @@
-// Package client 用户购物车相关操作
+// Package client 用户购物车 handlerFunc
 package client
 
 import (
@@ -14,7 +14,7 @@ import (
 func (uc *UserController) ShowCarts(c *gin.Context) {
 
 	// 当前用户 id
-	uid := CurrentUser(c)
+	uid := app.CurrentUser(c)
 
 	cartModel := cart.GetCart(uid)
 	if len(cartModel.BookID) == 0 {
@@ -33,7 +33,7 @@ func (uc *UserController) ShowCarts(c *gin.Context) {
 // AddIntoCarts 加入购物车
 func (uc *UserController) AddIntoCarts(c *gin.Context) {
 	// 获取当前用户 id
-	uid := CurrentUser(c)
+	uid := app.CurrentUser(c)
 
 	// 获取购物车信息
 	cartModel := cart.GetCart(uid)
@@ -67,7 +67,7 @@ func (uc *UserController) AddIntoCarts(c *gin.Context) {
 // RemoveFromCarts 删除购物车中图书
 func (uc *UserController) RemoveFromCarts(c *gin.Context) {
 	// 获取当前用户 id
-	uid := CurrentUser(c)
+	uid := app.CurrentUser(c)
 
 	// 获取购物车信息
 	cartModel := cart.GetCart(uid)
@@ -105,7 +105,7 @@ func (uc *UserController) RemoveFromCarts(c *gin.Context) {
 // FlushCarts 清空购物车
 func (uc *UserController) FlushCarts(c *gin.Context) {
 	// 获取当前用户 id
-	uid := CurrentUser(c)
+	uid := app.CurrentUser(c)
 
 	if !cart.DelCart(uid) {
 		// 失败返回失败信息

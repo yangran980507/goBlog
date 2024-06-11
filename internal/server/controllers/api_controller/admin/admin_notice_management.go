@@ -1,4 +1,4 @@
-// Package admin 公告管理
+// Package admin 管理员公告管理 handlerFunc
 package admin
 
 import (

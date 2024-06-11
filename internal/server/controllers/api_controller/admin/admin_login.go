@@ -1,4 +1,4 @@
-// Package admin 管理员登录处理函数
+// Package admin 管理员登录 handlerFunc
 package admin
 
 import (

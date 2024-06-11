@@ -1,4 +1,4 @@
-// Package admin 存放 admin 对 book 的操作
+// Package admin 管理员图书 handlerFunc
 package admin
 
 import (

@@ -1,4 +1,4 @@
-// Package client 用户公告类
+// Package client 用户公告 handlerFunc
 package client
 
 import (

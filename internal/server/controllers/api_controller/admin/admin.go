@@ -1,4 +1,4 @@
-// Package admin 管理员 handler 控制器
+// Package admin 管理员 Controller 模型
 package admin
 
 import "blog/internal/server/controllers"

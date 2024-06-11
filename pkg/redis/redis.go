@@ -13,8 +13,13 @@ type RedisClient struct {
 	Ctx    context.Context
 }
 
-var CartRedis, PollRedis *RedisClient
-var onceCart, oncePoll sync.Once
+var (
+	CartRedis     *RedisClient
+	PollRedis     *RedisClient
+	QuestionRedis *RedisClient
+)
+
+var onceCart, oncePoll, onceQuestion sync.Once
 
 // ConnectCart 初始化数据库连接实例
 func ConnectCart(add string, user string, pw string, db int) {
@@ -29,6 +34,14 @@ func ConnectPoll(add string, user string, pw string, db int) {
 
 	oncePoll.Do(func() {
 		PollRedis = NewClient(add, user, pw, db)
+	})
+}
+
+// ConnectQuestion 初始化数据库连接实例
+func ConnectQuestion(add string, user string, pw string, db int) {
+
+	onceQuestion.Do(func() {
+		QuestionRedis = NewClient(add, user, pw, db)
 	})
 }
 

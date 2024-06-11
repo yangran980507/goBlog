@@ -1,4 +1,4 @@
-// Package admin 投票管理
+// Package admin 管理员投票管理 handlerFunc
 package admin
 
 import (
@@ -73,10 +73,5 @@ func (ac *AdminController) DeletePoll(c *gin.Context) {
 	// 成功，返回成功信息
 	response.NewResponse(c, errcode.ErrSuccess, "删除成功").
 		WithResponse()
-	
-}
 
-// IncrPoll 投票
-func (ac *AdminController) IncrPoll(c *gin.Context) {
-	//
 }

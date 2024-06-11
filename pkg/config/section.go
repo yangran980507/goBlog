@@ -44,10 +44,11 @@ type LogSection struct {
 
 // RedisSection 存放 redis 配置
 type RedisSection struct {
-	Host         string
-	Port         string
-	Pw           string
-	User         string
-	CartDatabase int
-	PollDatabase int
+	Host             string
+	Port             string
+	Pw               string
+	User             string
+	CartDatabase     int
+	PollDatabase     int
+	QuestionDatabase int
 }

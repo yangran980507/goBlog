@@ -1,4 +1,4 @@
-// Package admin 存放 admin 对 user 的操作
+// Package admin 管理员用户管理 handlerFunc
 package admin
 
 import (

@@ -1,4 +1,4 @@
-// Package client 用户图书获取 handler
+// Package client 用户图书 handlerFunc
 package client
 
 import (

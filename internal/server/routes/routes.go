@@ -94,9 +94,21 @@ func RegisterAPIRoutes(router *gin.Engine) {
 				cart.DELETE("/flush", uc.FlushCarts)
 			}
 
+			// 公告相关
 			notice := client.Group("/notices")
 			{
-				notice.GET("", uc.NoticeGet)
+				// 显示公告信息
+				notice.GET("", middlewares.JWTAuth(), uc.NoticeGet)
+			}
+
+			// 投票相关
+			poll := client.Group("/polls")
+			poll.Use(middlewares.JWTAuth())
+			{
+				// 投票
+				poll.PUT("/vote", middlewares.ExecuteAuth("poll"), uc.IncrByPoll)
+				// 显示投票结果
+				poll.GET("", uc.GetPoll)
 			}
 		}
 
