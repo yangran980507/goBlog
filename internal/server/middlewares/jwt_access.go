@@ -15,18 +15,13 @@ func JWTAuth() gin.HandlerFunc {
 		claims, err := jwt.NewJWT().ParseToken(c)
 
 		if err != nil {
-			response.NewResponse(c, errcode.ErrTokenInvalid, "请先登录").
-				WithResponse()
+			response.NewResponse(c, errcode.ErrTokenInvalid).
+				WithResponse("token不存在或无效")
 			c.Abort()
+			return
 		}
 
 		userModel := user.GetUserInfo(claims.UserLoginName)
-
-		if userModel.ID == 0 {
-			response.NewResponse(c, errcode.ErrTokenInvalid, "账号异常，请重新登录").
-				WithResponse()
-			c.Abort()
-		}
 
 		c.Set("current_user", userModel)
 	}

@@ -5,6 +5,7 @@ import (
 	jsonPkg "blog/pkg/json"
 	"blog/pkg/logger"
 	"blog/pkg/redis"
+	"time"
 )
 
 // Cart 购物车模型
@@ -16,14 +17,14 @@ type Cart struct {
 }
 
 // SetCart 购物车入库
-func (c *Cart) SetCart(uid string) bool {
+func (cart *Cart) SetCart(uid string) bool {
 	// 序列化键值
-	strCart, err := jsonPkg.Marshal(c)
+	strCart, err := jsonPkg.Marshal(cart)
 	if err != nil {
 		logger.LogIf(err)
 		return false
 	}
-	if !redis.CartRedis.Set(uid+":cart", strCart, -1) {
+	if !redis.CartRedis.Set(uid+":cart", strCart, time.Duration(604800)*time.Second) {
 		return false
 	}
 	return true
@@ -37,7 +38,6 @@ func GetCart(uid string) Cart {
 	cart := Cart{}
 	// 反序列化
 	if err := jsonPkg.UnMarshal(strCart, &cart); err != nil {
-		logger.LogIf(err)
 		return Cart{}
 	}
 	return cart

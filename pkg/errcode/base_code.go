@@ -53,11 +53,17 @@ const (
 
 // 用户业务模块错误
 const (
-	// ErrEmptyCart (空购物车) / http.StatusOK / OK / 200
-	ErrEmptyCart CodeInt = iota + 100201
+	// ErrEmptyValue (空购物车) / http.StatusOK / OK / 200
+	ErrEmptyValue CodeInt = iota + 100201
 
 	// ErrOverMaxCount (超过购物车最大存量) / http.StatusOK / OK / 200
 	ErrOverMaxCount
+
+	// ErrBookHadExisted (图书已在购物车中) / http.StatusOK / OK / 200
+	ErrBookHadExisted
+
+	// ErrBookHadRemoved (图书已下架) / http.StatusOK / OK / 200
+	ErrBookHadRemoved
 )
 
 func InitializeErrorCode() {
@@ -69,10 +75,12 @@ func InitializeErrorCode() {
 	Register(ErrTokenTimeOut, 401, "Token Had Over MaxFreshTime")
 	Register(ErrTokenInvalid, 401, "Authorization Failed")
 	Register(ErrNotAdmin, 401, "Have no Authority to execute")
-	Register(ErrNotFound, 404, "Route Did Not Fund")
+	Register(ErrNotFound, 404, "Route Did Not Found")
 	Register(ErrLoginNameUsed, 401, "LoginName is Used")
 	Register(ErrAccountAbsent, 404, "Account is Not Found")
 	Register(ErrPassWord, 401, "PassWord Error")
-	Register(ErrEmptyCart, 200, "Shopping Carts is Empty")
+	Register(ErrEmptyValue, 200, "DataBase is Empty")
 	Register(ErrOverMaxCount, 200, "Shopping Carts is Fulled")
+	Register(ErrBookHadExisted, 200, "Book Had Existed")
+	Register(ErrBookHadRemoved, 200, "Book Had Removed")
 }

@@ -106,7 +106,7 @@ func (p *Paginator) getLastPage() string {
 // 返回上一页链接
 func (p *Paginator) getPrevPage() string {
 	if p.currentPage <= 1 || p.currentPage > p.totalPages {
-		return ""
+		return p.getPageLink(1)
 	}
 	return p.getPageLink(p.currentPage - 1)
 }
@@ -116,5 +116,5 @@ func (p *Paginator) getNextPage() string {
 	if p.totalPages > p.currentPage {
 		return p.getPageLink(p.currentPage + 1)
 	}
-	return ""
+	return p.getPageLink(p.totalPages)
 }

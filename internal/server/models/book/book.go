@@ -2,20 +2,19 @@
 package book
 
 import (
-	"blog/internal/server/models"
 	"blog/pkg/mysql"
 )
 
 // Book 图书模型
 type Book struct {
 	// 图书编号
-	models.BaseMode
+	ID uint `json:"id,omitempty" gorm:"column:id;primaryKey;autoIncrement"`
 	// 书号：
 	BookNumber string `json:"book_number,omitempty" gorm:"column:book_number;index;unique"`
 	// 书名
 	BookName string `json:"book_name,omitempty"`
 	// 图书类型 ID
-	CategoryName string `json:"category_name" gorm:"column:category_name;not null"`
+	CategoryName string `json:"category_name,omitempty" gorm:"column:category_name;not null"`
 	// 出版社
 	Publisher string `json:"publisher,omitempty"`
 	// 作者
@@ -31,11 +30,11 @@ type Book struct {
 	// 入库时间
 	InTime int64 `json:"in_time,omitempty"`
 	// 是否新书 ？
-	IsNewBook bool `json:"-"`
+	IsNewBook bool `json:"is_new_book,omitempty"`
 	// 是否推荐 ？
-	IsCommended bool `json:"-"`
+	IsCommended bool `json:"is_commended,omitempty"`
 	// 库存
-	Quantity int `json:"-"`
+	Quantity int `json:"quantity,omitempty"`
 	// 已售
 	Sold int `json:"sold,omitempty"`
 }
@@ -62,12 +61,25 @@ func (book *Book) Delete() int64 {
 // Get 获取图书
 func (book *Book) Get() (Book, int64) {
 	bookModel := Book{}
-	row := mysql.DB.First(&bookModel, book.ID).RowsAffected
+	row := mysql.DB.Select([]string{"id",
+		"book_number",
+		"book_name",
+		"category_name",
+		"publisher",
+		"author",
+		"introduce",
+		"price",
+		"pdate",
+		"pic_url",
+		"is_new_book",
+		"is_commended",
+		"quantity",
+	}).First(&bookModel, book.ID).RowsAffected
 	return bookModel, row
 }
 
 // Update 更新图书
-func (book *Book) Update() int64 {
+func (book *Book) Update() error {
 	return mysql.DB.Table("books").
 		Where("id = ?", book.ID).
 		Omit("id", "book_number", "in_time", "quantity", "selled").
@@ -83,8 +95,8 @@ func (book *Book) Update() int64 {
 			"quantity":      book.Quantity,
 			"is_new_book":   book.IsNewBook,
 			"is_commended":  book.IsCommended,
-		}).
-		RowsAffected
+		}).Error
+
 }
 
 // Category 图书类别模型

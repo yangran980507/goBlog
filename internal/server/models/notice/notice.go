@@ -2,19 +2,18 @@
 package notice
 
 import (
-	"blog/internal/server/models"
 	"blog/pkg/mysql"
 )
 
 type Notice struct {
 	// 公告编号
-	models.BaseMode
+	ID uint `json:"id,omitempty" gorm:"column:id;primaryKey;autoIncrement"`
 	// 标题
-	Title string
+	Title string `json:"title,omitempty"`
 	// 正文
-	Content string
+	Content string `json:"content,omitempty"`
 	// 发布时间
-	ShowTime int64
+	ShowTime int64 `json:"show_time,omitempty"`
 }
 
 // Create 添加公告
@@ -28,8 +27,13 @@ func (notice *Notice) Delete() int64 {
 }
 
 // Get 获取公告
-func Get() ([]Notice, int64) {
-	notices := make([]Notice, 5)
-	rows := mysql.DB.Order("show_time  desc").Find(&notices).RowsAffected
+func Get() (notices []Notice, rows int64) {
+	rows = mysql.DB.Order("show_time  desc").Find(&notices).RowsAffected
+	return notices, rows
+}
+
+// ClientGet 获取公告
+func ClientGet() (notices []Notice, rows int64) {
+	rows = mysql.DB.Select([]string{"title", "content"}).Order("show_time  desc").Find(&notices).RowsAffected
 	return notices, rows
 }

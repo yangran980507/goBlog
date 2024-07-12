@@ -33,6 +33,8 @@ func BindAndValid(c *gin.Context, object interface{}, handler validatorFunc) boo
 	if err := c.ShouldBind(object); err != nil {
 		// 如果绑定数据失败
 		logger.LogIf(err)
+		response.NewResponse(c, errcode.ErrBind).
+			WithResponse("请求验证失败，请稍后再试")
 		return false
 	}
 
@@ -41,9 +43,9 @@ func BindAndValid(c *gin.Context, object interface{}, handler validatorFunc) boo
 
 	if len(errs) > 0 {
 		// 发生错误，返回验证错误信息
-		response.NewResponse(c, errcode.ErrValidation).WithResponse(errs)
+		response.NewResponse(c, errcode.ErrValidation).
+			WithResponse(errs)
 		return false
 	}
-
 	return true
 }

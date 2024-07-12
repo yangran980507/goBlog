@@ -1,7 +1,7 @@
 // Package requests 管理员冻结/解冻用户请求验证
 package requests
 
-type Person struct {
-	LoginName  string `json:"login_name" form:"login_name" binding:"required"`
-	IsFreezing bool   `json:"is_freezing" form:"is_freezing" binding:"required"`
+// Freeze 用户控制验证模型
+type Freeze struct {
+	IsFrozen bool `json:"is_frozen" form:"is_frozen" binding:"required"`
 }

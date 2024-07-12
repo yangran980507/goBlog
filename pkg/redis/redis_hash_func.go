@@ -28,6 +28,16 @@ func (rds *RedisClient) HGetAll(key string) map[string]string {
 	return value
 }
 
+// GetKeys 获取 keys
+func (rds *RedisClient) GetKeys(key string) (keys []string) {
+	keys, err := rds.Client.HKeys(rds.Ctx, key).Result()
+	if err != nil {
+		logger.LogIf(err)
+		return []string{}
+	}
+	return keys
+}
+
 // HDel 删除 key 对应的 field
 func (rds *RedisClient) HDel(key string, field string) bool {
 	if err := rds.Client.HDel(rds.Ctx, key, field).Err(); err != nil {

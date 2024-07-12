@@ -14,9 +14,9 @@ type RedisClient struct {
 }
 
 var (
-	CartRedis     *RedisClient
-	PollRedis     *RedisClient
-	QuestionRedis *RedisClient
+	CartRedis  *RedisClient
+	PollRedis  *RedisClient
+	EventRedis *RedisClient
 )
 
 var onceCart, oncePoll, onceQuestion sync.Once
@@ -41,7 +41,7 @@ func ConnectPoll(add string, user string, pw string, db int) {
 func ConnectQuestion(add string, user string, pw string, db int) {
 
 	onceQuestion.Do(func() {
-		QuestionRedis = NewClient(add, user, pw, db)
+		EventRedis = NewClient(add, user, pw, db)
 	})
 }
 

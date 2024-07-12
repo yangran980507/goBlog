@@ -10,9 +10,7 @@ import (
 )
 
 func SetupRouter(router *gin.Engine) {
-	// 匹配模板
-	router.LoadHTMLGlob("templates/**/*.html")
-
+	
 	// 注册全局中间件
 	setupMiddlewares(router)
 

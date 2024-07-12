@@ -22,7 +22,7 @@ type BookStorageValidation struct {
 	// 价格
 	Price float64 `json:"price" valid:"price"`
 	// 出版日期
-	Pdate string `json:"pdate" valid:"pdate"`
+	Pdate int64 `json:"pdate" valid:"pdate"`
 	// 封面路径
 	PicURL string `json:"pic_url" valid:"pic_url"`
 	// 库存
@@ -85,7 +85,7 @@ type BookUpdateValidation struct {
 	// 价格
 	Price float64 `json:"price" valid:"price"`
 	// 出版日期
-	Pdate string `json:"pdate" valid:"pdate"`
+	Pdate int64 `json:"pdate" valid:"pdate"`
 	// 封面路径
 	PicURL string `json:"pic_url" valid:"pic_url"`
 	// 库存

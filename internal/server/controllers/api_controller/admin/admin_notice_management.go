@@ -2,7 +2,6 @@
 package admin
 
 import (
-	"blog/internal/server/models"
 	"blog/internal/server/models/notice"
 	"blog/internal/server/requests"
 	"blog/pkg/app"
@@ -16,10 +15,13 @@ import (
 // NoticeGet 显示公告
 func (ac *AdminController) NoticeGet(c *gin.Context) {
 	notices, rows := notice.Get()
+
 	if rows != 0 {
 		response.NewResponse(c, errcode.ErrSuccess).WithResponse(gin.H{
 			"notices": notices,
 		})
+	} else {
+		response.NewResponse(c, errcode.ErrEmptyValue).WithResponse("无数据")
 	}
 }
 
@@ -29,8 +31,8 @@ func (ac *AdminController) NoticeCreate(c *gin.Context) {
 	if err := c.ShouldBind(&request); err != nil {
 		// 绑定验证失败
 		logger.LogIf(err)
-		response.NewResponse(c, errcode.ErrBind, "发布失败，请稍后再试").
-			WithResponse()
+		response.NewResponse(c, errcode.ErrBind).
+			WithResponse("发布失败，请稍后再试")
 		return
 	}
 
@@ -44,13 +46,11 @@ func (ac *AdminController) NoticeCreate(c *gin.Context) {
 	noticeModel.Create()
 
 	if noticeModel.ID > 0 {
-
-		response.NewResponse(c, errcode.ErrSuccess).WithResponse(gin.H{
-			"notice": noticeModel,
-		})
+		// 发布成功
+		response.NewResponse(c, errcode.ErrSuccess).WithResponse("发布成功")
 	} else {
-		response.NewResponse(c, errcode.ErrSuccess).
-			WithResponse("发布出错，请稍后再试")
+		response.NewResponse(c, errcode.ErrServer).
+			WithResponse("发布失败，请稍后再试")
 	}
 }
 
@@ -60,16 +60,16 @@ func (ac *AdminController) NoticeDelete(c *gin.Context) {
 	id := app.GetIDFromAPI(c, "id")
 
 	noticeModel := notice.Notice{
-		BaseMode: models.BaseMode{ID: uint(id)},
+		ID: uint(id),
 	}
 
 	row := noticeModel.Delete()
 
 	if row == 1 {
-		response.NewResponse(c, errcode.ErrSuccess, "删除成功").
-			WithResponse()
+		response.NewResponse(c, errcode.ErrSuccess).
+			WithResponse("删除成功")
 	} else {
-		response.NewResponse(c, errcode.ErrServer, "删除失败，请稍后重试").
-			WithResponse()
+		response.NewResponse(c, errcode.ErrServer).
+			WithResponse("删除失败，请稍后重试")
 	}
 }

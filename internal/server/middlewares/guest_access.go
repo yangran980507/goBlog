@@ -14,7 +14,7 @@ func GuestAuth() gin.HandlerFunc {
 
 		if _, err := jwt.NewJWT().ParseToken(c); err == nil {
 			// 已授权，返回 err messages
-			response.NewResponse(c, errcode.ErrTokenInvalid, "请先退出登陆").
+			response.NewResponse(c, errcode.ErrTokenInvalid).
 				WithResponse("请先退出登陆")
 			// 后续 handler 不再执行
 			c.Abort()

@@ -8,9 +8,9 @@ import (
 
 type Poll struct {
 	// 投票项
-	OptionName string
+	OptionName string `json:"option_name"`
 	// 得票数
-	Count int
+	Count int `json:"count"`
 }
 
 // SetPoll 设置投票项
@@ -34,6 +34,12 @@ func GetPoll() []Poll {
 		})
 	}
 	return sPoll
+}
+
+// GetPollOpts 获取投票项
+func GetPollOpts() []string {
+	mPoll := redis.PollRedis.GetKeys("Poll")
+	return mPoll
 }
 
 // IncrPoll 投票

@@ -6,6 +6,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
+	"strconv"
 )
 
 // Page 分页数据
@@ -22,7 +23,12 @@ type Page struct {
 
 // Paginate 分页数据生成
 func Paginate(c *gin.Context, db *gorm.DB, controller string, tableName string,
-	data interface{}, count int, sortBy string, orderBy string) Page {
+	data interface{}, countStr string, sortBy string, orderBy string) Page {
+
+	count, err := strconv.Atoi(countStr)
+	if err != nil {
+		return Page{}
+	}
 
 	p := &Paginator{
 		ctx:          c,
@@ -32,7 +38,7 @@ func Paginate(c *gin.Context, db *gorm.DB, controller string, tableName string,
 		countPerPage: count,
 	}
 	p.initPaginator(controller, tableName)
-	err := p.query.
+	err = p.query.
 		Preload(clause.Associations).  // 预加载全部关联
 		Order(p.sort + " " + p.order). // 升序/降序排序
 		Limit(p.countPerPage).         // 查询数

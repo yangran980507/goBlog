@@ -10,6 +10,7 @@ import (
 	"blog/pkg/logger"
 	"blog/pkg/response"
 	"errors"
+	"fmt"
 	"github.com/gin-gonic/gin"
 )
 
@@ -30,6 +31,7 @@ func (uc *UserController) SignupUser(c *gin.Context) {
 		TrueName:  request.TrueName,
 		PassWord:  request.PassWord,
 		Phone:     request.Phone,
+		Address:   request.Address,
 	}
 	// 调用写数据库函数创建数据
 	userModel.Create()
@@ -50,8 +52,8 @@ func (uc *UserController) SignupUser(c *gin.Context) {
 			})
 	} else {
 		// 创建失败，返回失败信息
-		response.NewResponse(c, errcode.ErrTokenInvalid, "注册失败").
-			WithResponse()
+		response.NewResponse(c, errcode.ErrTokenInvalid).
+			WithResponse("注册失败")
 	}
 }
 
@@ -76,17 +78,17 @@ func (uc *UserController) LoginUser(c *gin.Context) {
 		// 登陆失败
 		switch {
 		case errors.Is(err, errcode.ErrAccountAbsent):
-			response.NewResponse(c, errcode.ErrAccountAbsent, "账户不存在").
-				WithResponse()
+			response.NewResponse(c, errcode.ErrAccountAbsent).
+				WithResponse("账户不存在")
 		case errors.Is(err, errcode.ErrPassWord):
-			response.NewResponse(c, errcode.ErrPassWord, "密码输入错误").
-				WithResponse()
+			response.NewResponse(c, errcode.ErrPassWord).
+				WithResponse("密码输入错误")
 		}
 
 	} else {
 		if allow := userModel.IsManager; allow {
-			response.NewResponse(c, errcode.ErrNotAdmin, "请使用普通用户账号登录!").
-				WithResponse()
+			response.NewResponse(c, errcode.ErrNotAdmin).
+				WithResponse("请使用用户账号登录!")
 		} else {
 			// 创建 jwt 鉴权结构体实例
 			userinfo := jwt.UserInfo{
@@ -96,11 +98,13 @@ func (uc *UserController) LoginUser(c *gin.Context) {
 			// 签发令牌
 			token := jwt.NewJWT().IssueToken(userinfo)
 			// 返回成功码，令牌及用户数据
-			response.NewResponse(c, errcode.ErrSuccess).WithResponse(
-				gin.H{
-					"user":  userModel,
-					"token": token,
-				})
+			response.NewResponse(c, errcode.ErrSuccess, "登录成功!").
+				WithResponse(
+					gin.H{
+						"user":   userModel,
+						"token":  token,
+						"userID": fmt.Sprintf("%v", userModel.ID),
+					})
 		}
 	}
 }

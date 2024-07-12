@@ -3,6 +3,7 @@ package requests
 
 import "github.com/thedevsaddam/govalidator"
 
+// SignInValidation 登录验证模型
 type SignInValidation struct {
 	LoginName string `json:"login_name" valid:"login_name"`
 	Password  string `json:"password" valid:"password"`

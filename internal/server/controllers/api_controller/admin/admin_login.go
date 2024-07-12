@@ -30,16 +30,16 @@ func (ac *AdminController) LoginAdmin(c *gin.Context) {
 		// 登陆失败
 		switch {
 		case errors.Is(err, errcode.ErrAccountAbsent):
-			response.NewResponse(c, errcode.ErrAccountAbsent, "账户不存在").
-				WithResponse()
+			response.NewResponse(c, errcode.ErrAccountAbsent).
+				WithResponse("账户不存在")
 		case errors.Is(err, errcode.ErrPassWord):
-			response.NewResponse(c, errcode.ErrPassWord, "密码输入错误").
-				WithResponse()
+			response.NewResponse(c, errcode.ErrPassWord).
+				WithResponse("密码输入错误")
 		}
 	} else {
 		if allow := userModel.IsManager; !allow {
-			response.NewResponse(c, errcode.ErrTokenInvalid, "请使用管理员账号登录!").
-				WithResponse()
+			response.NewResponse(c, errcode.ErrTokenInvalid).
+				WithResponse("非管理员账号!")
 		} else {
 			// 创建 jwt 鉴权结构体实例
 			userinfo := jwt.UserInfo{
@@ -49,7 +49,7 @@ func (ac *AdminController) LoginAdmin(c *gin.Context) {
 			// 签发令牌
 			token := jwt.NewJWT().IssueToken(userinfo)
 			// 返回成功码，令牌及用户数据
-			response.NewResponse(c, errcode.ErrSuccess).WithResponse(
+			response.NewResponse(c, errcode.ErrSuccess, "登录成功！").WithResponse(
 				gin.H{
 					"token": token,
 				})

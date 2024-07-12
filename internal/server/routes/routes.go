@@ -4,49 +4,12 @@ package routes
 import (
 	adminServer "blog/internal/server/controllers/api_controller/admin"
 	cliServer "blog/internal/server/controllers/api_controller/client"
-	"blog/internal/server/controllers/html_controller"
 	"blog/internal/server/middlewares"
 	"github.com/gin-gonic/gin"
 )
 
 // RegisterAPIRoutes 注册网页相关路由
 func RegisterAPIRoutes(router *gin.Engine) {
-
-	// 渲染路由组
-	htmlGroup := router.Group("")
-	{
-		cliGroup := htmlGroup.Group("/bookstore")
-		{
-			// 静态资源控制器
-			hc := new(html_controller.HtmlController)
-			// 应用主页
-			cliGroup.GET("/home", hc.HomePage)
-			// 用户注册
-			cliGroup.GET("/signup", hc.SignupPage)
-			// 图书分类
-			cliGroup.GET("/book-categories", hc.BooksCategories)
-			// 图书信息
-			cliGroup.GET("/book-messages", hc.BooksMessages)
-			// 定单查询
-			cliGroup.GET("/order-query", hc.OrdersQuery)
-			// 投票结果
-			cliGroup.GET("/votes", hc.VotingResults)
-			// 收银台
-			cliGroup.GET("/cashier", hc.Cashier)
-			// 新书上架
-			cliGroup.GET("/new-book", hc.NewBooks)
-			// 查询图书
-			cliGroup.GET("/book-query", hc.BooksQuery)
-
-			// 空购物车
-			cliGroup.GET("/empty-shopping", hc.EmptyShoppingCart)
-			// 购物车
-			cliGroup.GET("/shopping-cart", hc.ShoppingCart)
-			// 销售排行
-			cliGroup.GET("/sales-rank", hc.SalesRank)
-		}
-
-	}
 
 	// 接口路由组
 	apiGroup := router.Group("/api")
@@ -70,14 +33,15 @@ func RegisterAPIRoutes(router *gin.Engine) {
 
 			// 获取图书
 			collection := client.Group("/books")
-			collection.Use(middlewares.JWTAuth())
 			{
 				// 通过分类获取图书
 				collection.GET("/by-category", uc.GetBookByCategory)
-				// 通过新书排行获取图书
-				collection.GET("/by-is_new_book", uc.GetBookByIsNewBook)
+				// 通过新书获取图书
+				collection.GET("/by-is_new_book/:count", uc.GetBookByIsNewBook)
 				// 通过销售排行获取图书
-				collection.GET("/by-sold", uc.GetBookBySold)
+				collection.GET("/by-sold/:count", uc.GetBookBySold)
+				// 通过推荐获取图书
+				collection.GET("/by-recommended/:count", uc.GetBookByRecommended)
 			}
 
 			// 购物车相关
@@ -92,23 +56,26 @@ func RegisterAPIRoutes(router *gin.Engine) {
 				cart.DELETE("/remove/:cart_id", uc.RemoveFromCarts)
 				// 清空购物车
 				cart.DELETE("/flush", uc.FlushCarts)
+				// 增加购物车商品数量
+				cart.PUT("/counts/:id", uc.AddForCarts)
 			}
 
 			// 公告相关
 			notice := client.Group("/notices")
 			{
 				// 显示公告信息
-				notice.GET("", middlewares.JWTAuth(), uc.NoticeGet)
+				notice.GET("", uc.NoticeGet)
 			}
 
 			// 投票相关
 			poll := client.Group("/polls")
-			poll.Use(middlewares.JWTAuth())
 			{
 				// 投票
-				poll.PUT("/vote", middlewares.ExecuteAuth("poll"), uc.IncrByPoll)
+				poll.PUT("/vote", middlewares.JWTAuth(), middlewares.ExecuteAuth("poll"), uc.IncrByPoll)
 				// 显示投票结果
-				poll.GET("", uc.GetPoll)
+				poll.GET("", middlewares.JWTAuth(), uc.GetPoll)
+				// 显示投票项
+				poll.GET("keys", uc.GetPollOption)
 			}
 		}
 
@@ -150,7 +117,7 @@ func RegisterAPIRoutes(router *gin.Engine) {
 				// 显示用户
 				userManage.GET("", ac.ShowUsers)
 				// 冻结/解冻用户
-				userManage.PUT("/manage-freeze", ac.ManageFreezeUser)
+				userManage.PUT("/manage-freeze/:id", ac.ManageFreezeUser)
 			}
 
 			// 公告管理路由组

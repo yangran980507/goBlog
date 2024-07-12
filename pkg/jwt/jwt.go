@@ -19,7 +19,7 @@ type JWT struct {
 	MaxRefresh time.Duration
 }
 
-// UserInfo 用户信息//
+// UserInfo 用户信息 私有声明
 type UserInfo struct {
 	UserID        uint   `json:"user_id"`
 	UserLoginName string `json:"user_login_name"`
@@ -37,7 +37,7 @@ func NewJWT() *JWT {
 
 	return &JWT{
 		SecretKey:  []byte(global.AppSetting.JWTSecretKey),
-		MaxRefresh: time.Duration(global.AppSetting.JWTMaxExpireTime) * time.Minute,
+		MaxRefresh: time.Duration(global.AppSetting.JWTExpireTime) * time.Minute,
 	}
 }
 
@@ -93,7 +93,7 @@ func (jwt *JWT) ParseToken(c *gin.Context) (*CustomJWTClaims, error) {
 	// 从 Request.Header 中读取 Token
 	tokenString, err := jwt.getTokenFromHeader(c)
 	if err != nil {
-		return nil, err
+		return &CustomJWTClaims{}, err
 	}
 
 	// 解析 TokenString

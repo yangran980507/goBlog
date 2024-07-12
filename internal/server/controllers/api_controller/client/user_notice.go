@@ -10,10 +10,12 @@ import (
 
 // NoticeGet 获取公告
 func (uc *UserController) NoticeGet(c *gin.Context) {
-	notices, rows := notice.Get()
+	notices, rows := notice.ClientGet()
 	if rows != 0 {
 		response.NewResponse(c, errcode.ErrSuccess).WithResponse(gin.H{
 			"notices": notices,
 		})
+	} else {
+		response.NewResponse(c, errcode.ErrEmptyValue).WithResponse("暂无数据")
 	}
 }

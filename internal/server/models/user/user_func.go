@@ -32,10 +32,11 @@ func GetUsers() ([]User, error) {
 }
 
 // Paginate 查询数据并进行分页
-func Paginate(c *gin.Context, count int) (users []User, page paginator.Page) {
+func Paginate(c *gin.Context, count string) (users []User, page paginator.Page) {
 	page = paginator.Paginate(
 		c,
-		mysql.DB.Model(&User{}).Not("is_manager = ?", true),
+		mysql.DB.Model(&User{}).
+			Not("is_manager = ?", true),
 		"admin",
 		"users",
 		&users,

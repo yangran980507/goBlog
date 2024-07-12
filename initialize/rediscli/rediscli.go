@@ -33,6 +33,6 @@ func setupRedis() {
 		fmt.Sprintf("%v:%v", global.RedisSetting.Host, global.RedisSetting.Port),
 		global.RedisSetting.User,
 		global.RedisSetting.Pw,
-		global.RedisSetting.QuestionDatabase,
+		global.RedisSetting.EventDatabase,
 	)
 }

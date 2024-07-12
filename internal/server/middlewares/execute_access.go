@@ -15,7 +15,7 @@ func ExecuteAuth(action string) gin.HandlerFunc {
 
 		// 执行完某操作后，往 redis 中存入 hash 数据 uid(key): action(field): answer(value)
 		// redis 库中查询 action 对应 answer 是否存在
-		if redis.QuestionRedis.HExists("users:"+uid, action) {
+		if redis.EventRedis.HExists("users:"+uid, action) {
 			c.Set("isExecute", true)
 		}
 		c.Set("action", action)

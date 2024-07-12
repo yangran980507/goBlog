@@ -51,7 +51,7 @@ func (uc *UserController) IncrByPoll(c *gin.Context) {
 	action := c.MustGet("action").(string)
 
 	// 存入操作记录
-	redis.QuestionRedis.HSetNX("users:"+uid, action, "execute")
+	redis.EventRedis.HSetNX("users:"+uid, action, "execute")
 
 	// 返回投票成功消息
 	response.NewResponse(c, errcode.ErrSuccess, "投票成功").
@@ -67,5 +67,17 @@ func (uc *UserController) GetPoll(c *gin.Context) {
 	response.NewResponse(c, errcode.ErrSuccess).
 		WithResponse(gin.H{
 			"polls": polls,
+		})
+}
+
+// GetPollOption 获取投票项
+func (uc *UserController) GetPollOption(c *gin.Context) {
+	// 读取投票项
+	polls := poll.GetPollOpts()
+
+	// 返回投票项
+	response.NewResponse(c, errcode.ErrSuccess).
+		WithResponse(gin.H{
+			"pollKeys": polls,
 		})
 }

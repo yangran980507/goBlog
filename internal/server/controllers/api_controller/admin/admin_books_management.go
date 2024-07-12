@@ -2,12 +2,10 @@
 package admin
 
 import (
-	"blog/internal/server/models"
 	"blog/internal/server/models/book"
 	"blog/internal/server/requests"
 	"blog/pkg/app"
 	"blog/pkg/errcode"
-	"blog/pkg/helps"
 	"blog/pkg/logger"
 	"blog/pkg/response"
 	"github.com/gin-gonic/gin"
@@ -29,7 +27,7 @@ func (ac *AdminController) BookStorage(c *gin.Context) {
 		Author:       request.Author,
 		Introduce:    request.Introduce,
 		Price:        request.Price,
-		Pdate:        helps.StrToTimeUnix(request.Pdate),
+		Pdate:        request.Pdate,
 		PicURL:       "../../assets/images/" + request.PicURL,
 		InTime:       time.Now().Unix(),
 		Quantity:     request.Quantity,
@@ -41,19 +39,18 @@ func (ac *AdminController) BookStorage(c *gin.Context) {
 
 	if err != nil {
 		logger.LogIf(err)
-		response.NewResponse(c, errcode.ErrServer, "服务器错误：入库失败").
-			WithResponse()
+		response.NewResponse(c, errcode.ErrServer).
+			WithResponse("入库失败，请稍候再试！")
 	} else {
-		response.NewResponse(c, errcode.ErrSuccess, "入库成功").
-			WithResponse()
+		response.NewResponse(c, errcode.ErrSuccess).
+			WithResponse("入库成功")
 	}
 }
 
 // GetBooksAllByPaginator 通过分类控制器获取入库图书信息
 func (ac *AdminController) GetBooksAllByPaginator(c *gin.Context) {
 
-	books := make([]book.Book, 10)
-	books, page := book.GetBooksAll(c, 10)
+	books, page := book.GetBooksAll(c, "8")
 	response.NewResponse(c, errcode.ErrSuccess).WithResponse(gin.H{
 		"books": books,
 		"page":  page,
@@ -68,16 +65,16 @@ func (ac *AdminController) DeleteBook(c *gin.Context) {
 
 	// 图书编号实例
 	bookModel := book.Book{
-		BaseMode: models.BaseMode{ID: uint(id)},
+		ID: uint(id),
 	}
 
 	row := bookModel.Delete()
 	if row == 1 {
-		response.NewResponse(c, errcode.ErrSuccess, "删除成功").
-			WithResponse()
+		response.NewResponse(c, errcode.ErrSuccess).
+			WithResponse("删除成功")
 	} else {
-		response.NewResponse(c, errcode.ErrServer, "服务器错误：删除失败").
-			WithResponse()
+		response.NewResponse(c, errcode.ErrServer).
+			WithResponse("删除失败，请稍后再试")
 	}
 }
 
@@ -89,7 +86,7 @@ func (ac *AdminController) GetBook(c *gin.Context) {
 
 	// 图书编号实例
 	bookModel := book.Book{
-		BaseMode: models.BaseMode{ID: uint(id)},
+		ID: uint(id),
 	}
 
 	b, row := bookModel.Get()
@@ -98,8 +95,8 @@ func (ac *AdminController) GetBook(c *gin.Context) {
 			"book": b,
 		})
 	} else {
-		response.NewResponse(c, errcode.ErrServer, "服务器出错，请稍后重试").
-			WithResponse()
+		response.NewResponse(c, errcode.ErrServer).
+			WithResponse("服务器出错，请稍后重试")
 	}
 
 }
@@ -116,21 +113,19 @@ func (ac *AdminController) BookUpdate(c *gin.Context) {
 	id := app.GetIDFromAPI(c, "id")
 
 	bookModel := book.Book{
-		BaseMode:     models.BaseMode{ID: uint(id)},
+		ID:           uint(id),
 		BookName:     request.BookName,
 		CategoryName: request.CategoryName,
 		Publisher:    request.Publisher,
 		Author:       request.Author,
 		Introduce:    request.Introduce,
 		Price:        request.Price,
-		Pdate:        helps.StrToTimeUnix(request.Pdate),
+		Pdate:        request.Pdate,
 		PicURL:       "../../assets/images/" + request.PicURL,
 		Quantity:     request.Quantity,
 		IsNewBook:    request.IsNewBook,
 		IsCommended:  request.IsCommended,
 	}
-
-	var row int64
 
 	bookOld, _ := bookModel.Get()
 	// 判断类型是否修改
@@ -141,22 +136,21 @@ func (ac *AdminController) BookUpdate(c *gin.Context) {
 			// 类型不存在，创建新类型
 			err = bookModel.AddCategory()
 			if err != nil {
-				response.NewResponse(c, errcode.ErrServer, "服务器出错：修改失败").
-					WithResponse()
+				response.NewResponse(c, errcode.ErrServer).
+					WithResponse("修改失败，请稍后再试")
 				return
 			}
 		}
 	}
 
-	row = bookModel.Update()
+	err := bookModel.Update()
 
-	if row == 1 {
-		response.NewResponse(c, errcode.ErrSuccess, "修改成功").
-			WithResponse()
+	if err != nil {
+		response.NewResponse(c, errcode.ErrServer).
+			WithResponse("修改失败，请稍后再试")
 	} else {
-
-		response.NewResponse(c, errcode.ErrSuccess, "未作任何修改").
-			WithResponse()
+		response.NewResponse(c, errcode.ErrSuccess).
+			WithResponse("修改成功")
 	}
 
 	// 获取修改前分类

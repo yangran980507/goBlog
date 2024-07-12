@@ -21,8 +21,23 @@ func (uc *UserController) GetBookByCategory(c *gin.Context) {
 
 // GetBookByIsNewBook 通过是否新书获取图书
 func (uc *UserController) GetBookByIsNewBook(c *gin.Context) {
-	books := make([]book.Book, 5)
-	books, page := book.GetByIsNewBook(c, 5)
+
+	countStr := c.Param("count")
+
+	books, page := book.GetByIsNewBook(c, countStr)
+
+	response.NewResponse(c, errcode.ErrSuccess).WithResponse(gin.H{
+		"books": books,
+		"page":  page,
+	})
+}
+
+// GetBookByRecommended 通过是否推荐获取图书
+func (uc *UserController) GetBookByRecommended(c *gin.Context) {
+
+	countStr := c.Param("count")
+
+	books, page := book.GetByRecommended(c, countStr)
 
 	response.NewResponse(c, errcode.ErrSuccess).WithResponse(gin.H{
 		"books": books,
@@ -32,8 +47,9 @@ func (uc *UserController) GetBookByIsNewBook(c *gin.Context) {
 
 // GetBookBySold 通过销量获取图书
 func (uc *UserController) GetBookBySold(c *gin.Context) {
-	books := make([]book.Book, 5)
-	books, page := book.GetBySold(c, 5)
+	countStr := c.Param("count")
+
+	books, page := book.GetBySold(c, countStr)
 
 	response.NewResponse(c, errcode.ErrSuccess).WithResponse(gin.H{
 		"books": books,
