@@ -11,6 +11,7 @@ func Initialize() {
 
 	// 指定优先于同目录下的其他文件运行
 	seed.SetRunOrder([]string{
+		"SeedBooksTable",
 		"SeedUsersTable",
 	})
 }
