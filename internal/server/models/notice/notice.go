@@ -8,8 +8,6 @@ import (
 type Notice struct {
 	// 公告编号
 	ID uint `json:"id,omitempty" gorm:"column:id;primaryKey;autoIncrement"`
-	// 标题
-	Title string `json:"title,omitempty"`
 	// 正文
 	Content string `json:"content,omitempty"`
 	// 发布时间

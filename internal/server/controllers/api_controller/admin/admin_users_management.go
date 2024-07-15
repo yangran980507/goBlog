@@ -39,8 +39,8 @@ func (ac *AdminController) ManageFreezeUser(c *gin.Context) {
 		userModel.Freeze = !request.IsFrozen
 	}
 
-	u, err := userModel.MemberFreezeUpdate()
-	if err != nil {
+	u, row := userModel.MemberFreezeUpdate()
+	if row == 0 {
 		// 更新失败
 		response.NewResponse(c, errcode.ErrServer).
 			WithResponse("修改失败，请稍后再试")

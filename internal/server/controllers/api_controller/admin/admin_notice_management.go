@@ -37,8 +37,7 @@ func (ac *AdminController) NoticeCreate(c *gin.Context) {
 	}
 
 	noticeModel := notice.Notice{
-
-		Title:    request.Title,
+		
 		Content:  request.Content,
 		ShowTime: time.Now().Unix(),
 	}

@@ -50,6 +50,7 @@ func Execute() {
 func addCmd() {
 	RootCmd.AddCommand(
 		ServeCmd,
+		SeedCmd,
 	)
 }
 

@@ -43,13 +43,14 @@ func (userModel *User) ComparePSW(psw string) bool {
 }
 
 // MemberFreezeUpdate 更新用户 freeze 字段
-func (userModel *User) MemberFreezeUpdate() (user User, err error) {
+func (userModel *User) MemberFreezeUpdate() (user User, row int64) {
 
-	if err = mysql.DB.Model(&User{}).Where("id = ?", userModel.ID).
-		Update("freeze", userModel.Freeze).Error; err != nil {
-		return User{}, err
-	}
+	row = mysql.DB.Model(&User{}).Where("id = ?", userModel.ID).
+		Update("freeze", userModel.Freeze).RowsAffected
+
 	mysql.DB.Model(&User{}).
 		Where("id = ?", userModel.ID).First(&user)
-	return user, nil
+
+	return
+
 }
