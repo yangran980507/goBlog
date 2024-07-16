@@ -32,6 +32,6 @@ func Get() (notices []Notice, rows int64) {
 
 // ClientGet 获取公告
 func ClientGet() (notices []Notice, rows int64) {
-	rows = mysql.DB.Select([]string{"title", "content"}).Order("show_time  desc").Find(&notices).RowsAffected
+	rows = mysql.DB.Select([]string{"content"}).Order("show_time  desc").Find(&notices).RowsAffected
 	return notices, rows
 }

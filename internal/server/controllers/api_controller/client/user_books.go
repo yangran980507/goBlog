@@ -56,3 +56,38 @@ func (uc *UserController) GetBookBySold(c *gin.Context) {
 		"page":  page,
 	})
 }
+
+// GetBookByName 通过书名获取图书
+func (uc *UserController) GetBookByName(c *gin.Context) {
+	bookName := c.Param("book_name")
+
+	bookModel, row := book.GetByName(bookName)
+
+	if row != 0 {
+		response.NewResponse(c, errcode.ErrSuccess).WithResponse(gin.H{
+			"book": bookModel,
+		})
+	} else {
+		response.NewResponse(c, errcode.ErrBookHadRemoved).
+			WithResponse("图书已下架")
+	}
+}
+
+// GetBookBySearch 通过搜索获取图书
+func (uc *UserController) GetBookBySearch(c *gin.Context) {
+	bookName := c.Param("book_name")
+
+	books, row := book.GetBySearchName(bookName)
+
+	booksLength := len(books)
+
+	if row != 0 {
+		response.NewResponse(c, errcode.ErrSuccess).WithResponse(gin.H{
+			"books":       books,
+			"resultCount": booksLength,
+		})
+	} else {
+		response.NewResponse(c, errcode.ErrEmptyValue).
+			WithResponse("未查到相关图书!")
+	}
+}

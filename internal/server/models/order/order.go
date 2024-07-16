@@ -18,7 +18,11 @@ type Order struct {
 	// 备注
 	Notes string `json:"notes,omitempty"`
 	// 是否执行
-	Enforce bool `json:"enforce,omitempty" gorm:"not null"`
+	Enforce bool `json:"enforce,omitempty" `
+	// 退款
+	Refund bool `json:"refund,omitempty" `
+	// 退款说明
+	RefundExplain string `json:"refund_explain"`
 }
 
 // OrdersDetail 定单明细

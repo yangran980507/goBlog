@@ -3,18 +3,14 @@ package requests
 
 import "github.com/thedevsaddam/govalidator"
 
-// OrderValidation 定单验证模型
+// OrderValidation 订单验证模型
 type OrderValidation struct {
 	// 用户名
 	LoginName string `json:"login_name,omitempty"`
 	// 真实名
 	TrueName string `json:"true_name,omitempty"`
-	// 邮政编码
-	PostCode string `json:"post_code,omitempty"`
 	// 付款方式
 	PayWay string `json:"pay_way,omitempty" valid:"pay_way"`
-	// 邮寄方式
-	Carry string `json:"carry,omitempty" valid:"carry"`
 	// 邮寄地址
 	Address string `json:"address,omitempty" valid:"address"`
 	// 联系电话

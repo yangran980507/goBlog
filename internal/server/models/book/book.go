@@ -12,7 +12,7 @@ type Book struct {
 	// 书号：
 	BookNumber string `json:"book_number,omitempty" gorm:"column:book_number;index;unique"`
 	// 书名
-	BookName string `json:"book_name,omitempty"`
+	BookName string `json:"book_name,omitempty" gorm:"column:book_name;index;unique"`
 	// 图书类型 ID
 	CategoryName string `json:"category_name,omitempty" gorm:"column:category_name;not null"`
 	// 出版社

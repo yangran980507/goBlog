@@ -8,6 +8,25 @@ import (
 	"gorm.io/gorm/clause"
 )
 
+// GetByName 书名获取
+func GetByName(name string) (bookModel Book, row int64) {
+	result := mysql.DB.Model(Book{}).
+		Select([]string{"id", "book_name", "category_name",
+			"publisher", "author", "introduce", "price", "pdate", "pic_url"}).
+		Where("book_name = ?", name).First(&bookModel)
+	return bookModel, result.RowsAffected
+}
+
+// GetBySearchName 搜索书名获取
+func GetBySearchName(name string) (books []Book, row int64) {
+	result := mysql.DB.Model(Book{}).
+		Select([]string{"id", "book_name", "category_name",
+			"publisher", "author", "introduce", "price", "pdate", "pic_url"}).
+		Where("book_name LIKE ?", "%"+name+"%").Find(&books)
+
+	return books, result.RowsAffected
+}
+
 // GetByIsNewBook 查询为新书项的图书
 func GetByIsNewBook(c *gin.Context, count string) (books []Book, page paginator.Page) {
 
@@ -47,7 +66,7 @@ func GetBySold(c *gin.Context, count string) (books []Book, page paginator.Page)
 		c,
 		mysql.DB.Model(Book{}),
 		"client",
-		"books/by-sold",
+		"books/by-sold/"+count,
 		&books,
 		count,
 		"sold",

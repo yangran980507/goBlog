@@ -42,6 +42,10 @@ func RegisterAPIRoutes(router *gin.Engine) {
 				collection.GET("/by-sold/:count", uc.GetBookBySold)
 				// 通过推荐获取图书
 				collection.GET("/by-recommended/:count", uc.GetBookByRecommended)
+				// 通过书名获取图书
+				collection.GET("/:book_name", uc.GetBookByName)
+				// 通过搜索获取图书
+				collection.GET("/search/:book_name", uc.GetBookBySearch)
 			}
 
 			// 购物车相关
