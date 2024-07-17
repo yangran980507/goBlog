@@ -60,8 +60,6 @@ func RegisterAPIRoutes(router *gin.Engine) {
 				cart.DELETE("/remove/:cart_id", uc.RemoveFromCarts)
 				// 清空购物车
 				cart.DELETE("/flush", uc.FlushCarts)
-				// 增加购物车商品数量
-				cart.PUT("/counts/:id", uc.AddForCarts)
 			}
 
 			// 公告相关

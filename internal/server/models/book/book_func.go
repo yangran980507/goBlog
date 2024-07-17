@@ -5,6 +5,7 @@ import (
 	"blog/pkg/mysql"
 	"blog/pkg/paginator"
 	"github.com/gin-gonic/gin"
+	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
 )
 
@@ -105,8 +106,9 @@ func GetBooksAll(c *gin.Context, count string) (books []Book, page paginator.Pag
 // GetCategories 获取分类
 func GetCategories() ([]Category, int64) {
 	categories := make([]Category, 0)
-	row := mysql.DB.Preload("Books", mysql.DB.Model(Book{}).
-		Select("id", "book_name", "publisher")).
-		Order("category_id asc").Find(&categories).RowsAffected
+	row := mysql.DB.Preload("Books", func(db *gorm.DB) *gorm.DB {
+		return db.Model(Book{}).
+			Select([]string{"id", "category_name", "book_name", "publisher"})
+	}).Order("category_id asc").Find(&categories).RowsAffected
 	return categories, row
 }

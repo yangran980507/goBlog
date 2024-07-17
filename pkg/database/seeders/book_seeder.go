@@ -12,7 +12,7 @@ import (
 func init() {
 	seed.Add("SeedBooksTable", func(db *gorm.DB) {
 
-		books := factories.MakeBooks(50)
+		books := factories.MakeBooks(5)
 
 		result := db.Table("books").Create(&books)
 

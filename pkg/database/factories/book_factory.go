@@ -22,7 +22,7 @@ func MakeBooks(count int) []book.Book {
 		model := book.Book{
 			BookNumber:   faker.Phonenumber(),
 			BookName:     faker.Name(),
-			CategoryName: faker.Name(),
+			CategoryName: "类别8",
 			Publisher:    faker.Name(),
 			Author:       faker.Username(),
 			Introduce:    faker.Paragraph(),

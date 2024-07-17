@@ -125,8 +125,10 @@ func (uc *UserController) RemoveFromCarts(c *gin.Context) {
 		return
 	}
 
-	response.NewResponse(c, errcode.ErrSuccess).
-		WithResponse("删除成功")
+	response.NewResponse(c, errcode.ErrSuccess, "删除成功").
+		WithResponse(gin.H{
+			"bookLength": len(cartModel.BookID),
+		})
 }
 
 // FlushCarts 清空购物车
@@ -136,16 +138,11 @@ func (uc *UserController) FlushCarts(c *gin.Context) {
 
 	if !cart.DelCart(uid) {
 		// 失败返回失败信息
-		response.NewResponse(c, errcode.ErrServer, "清空失败，请稍后重试").
-			WithResponse()
+		response.NewResponse(c, errcode.ErrServer).
+			WithResponse("清空失败，请稍后重试")
 		return
 	}
 
-	response.NewResponse(c, errcode.ErrSuccess, "清空成功").
-		WithResponse()
-}
-
-// AddForCarts 增加购物车数量
-func (uc *UserController) AddForCarts(c *gin.Context) {
-	//
+	response.NewResponse(c, errcode.ErrSuccess).
+		WithResponse("清空成功")
 }
