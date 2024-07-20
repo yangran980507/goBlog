@@ -62,6 +62,14 @@ func RegisterAPIRoutes(router *gin.Engine) {
 				cart.DELETE("/flush", uc.FlushCarts)
 			}
 
+			// 订单相关
+			order := client.Group("/orders")
+			order.Use(middlewares.JWTAuth())
+			{
+				order.POST("/submit", uc.OrdersSubmit)
+
+			}
+
 			// 公告相关
 			notice := client.Group("/notices")
 			{

@@ -64,6 +64,9 @@ const (
 
 	// ErrBookHadRemoved (图书已下架) / http.StatusOK / OK / 200
 	ErrBookHadRemoved
+
+	// ErrBooksQuantityDeficit (图书库存不足) / http.StatusOK / OK / 200
+	ErrBooksQuantityDeficit
 )
 
 func InitializeErrorCode() {
@@ -83,4 +86,5 @@ func InitializeErrorCode() {
 	Register(ErrOverMaxCount, 200, "Shopping Carts is Fulled")
 	Register(ErrBookHadExisted, 200, "Book Had Existed")
 	Register(ErrBookHadRemoved, 200, "Book Had Removed")
+	Register(ErrBooksQuantityDeficit, 200, "Books Quantity Deficit")
 }

@@ -9,6 +9,17 @@ import (
 	"gorm.io/gorm/clause"
 )
 
+// IsBookSufficient 验证图书库存是否满足
+func IsBookSufficient(id uint, amount int) (string, bool) {
+	var book Book
+	mysql.DB.Model(Book{}).Where("id = ?", id).First(&book)
+
+	if book.Quantity < amount {
+		return book.BookName, false
+	}
+	return book.BookName, true
+}
+
 // GetByName 书名获取
 func GetByName(name string) (bookModel Book, row int64) {
 	result := mysql.DB.Model(Book{}).
