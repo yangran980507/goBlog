@@ -4,6 +4,7 @@ package helps
 import (
 	"crypto/rand"
 	"io"
+	"slices"
 )
 
 // JudgeElementInSliceExist 判断数组是否含指定有元素
@@ -43,4 +44,19 @@ func RandomNumber(length int) string {
 		b[i] = table[int(b[i])%len(table)]
 	}
 	return string(b)
+}
+
+// GenerateNewSliceByDeleteOldSlice 删除切片1中给出的切片2的值
+func GenerateNewSliceByDeleteOldSlice(original, condition []int64) (result []int64) {
+	result = slices.DeleteFunc(original, func(i int64) bool {
+		var answer bool
+		for _, v := range condition {
+			if v == i {
+				answer = true
+				break
+			}
+		}
+		return answer
+	})
+	return
 }

@@ -5,6 +5,11 @@ import (
 	"blog/pkg/mysql"
 )
 
+// Carts 接受切片请求 JSON
+type Carts struct {
+	Books []Book `json:"books"`
+}
+
 // Book 图书模型
 type Book struct {
 	// 图书编号

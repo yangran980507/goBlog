@@ -21,8 +21,6 @@ func (uc *UserController) ShowCarts(c *gin.Context) {
 
 	cartModel := cart.GetCart(uid)
 
-	fmt.Println(cartModel)
-
 	bookLength := len(cartModel.BookID)
 	if bookLength == 0 {
 		response.NewResponse(c, errcode.ErrEmptyValue).
@@ -32,16 +30,8 @@ func (uc *UserController) ShowCarts(c *gin.Context) {
 
 	books, _ := book.GetBooksBySlice(cartModel.BookID)
 
-	if len(books) < bookLength {
-		response.NewResponse(c, errcode.ErrSuccess, "下架图书已撤出购物车").
-			WithResponse(gin.H{
-				"cart": books,
-			})
-	} else {
-		response.NewResponse(c, errcode.ErrSuccess).WithResponse(gin.H{
-			"cart": books,
-		})
-	}
+	response.NewResponse(c, errcode.ErrSuccess).WithResponse(gin.H{
+		"cart": books})
 }
 
 // AddIntoCarts 加入购物车
@@ -110,11 +100,27 @@ func (uc *UserController) RemoveFromCarts(c *gin.Context) {
 	// 获取购物车信息
 	cartModel := cart.GetCart(uid)
 
-	// 获取要删除的购物车位号
-	cartID := app.GetIDFromAPI(c, "cart_id")
+	// 获取请求删除的图书切片
+	var books book.Carts
+	err := c.ShouldBind(&books)
+	if err != nil {
+		response.NewResponse(c, errcode.ErrBind).WithResponse("删除失败")
+		return
+	}
+
+	// 获取请求删除的 ID 切片
+	condition := make([]int64, 0)
+	for _, v := range books.Books {
+		condition = append(condition, int64(v.ID))
+	}
+
+	fmt.Println(condition)
+	// 换取新的 购物车数据
+	cartModel.BookID = helps.GenerateNewSliceByDeleteOldSlice(cartModel.BookID, condition)
+
+	fmt.Println(cartModel.BookID)
 
 	// 删除对应的购物车位号
-	cartModel.BookID = helps.DeleteElementInSliceExist(cartID, cartModel.BookID)
 	cartModel.UpdateTime = time.Now().Unix()
 
 	// 重新存入
@@ -125,6 +131,7 @@ func (uc *UserController) RemoveFromCarts(c *gin.Context) {
 		return
 	}
 
+	// 删除成功
 	response.NewResponse(c, errcode.ErrSuccess, "删除成功").
 		WithResponse(gin.H{
 			"bookLength": len(cartModel.BookID),
