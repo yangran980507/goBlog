@@ -57,7 +57,7 @@ func RegisterAPIRoutes(router *gin.Engine) {
 				// 加入购物车
 				cart.POST("/add/:id", uc.AddIntoCarts)
 				// 删除购物车中图书
-				cart.DELETE("/remove", uc.RemoveFromCarts)
+				cart.POST("/remove", uc.RemoveFromCarts)
 				// 清空购物车
 				cart.DELETE("/flush", uc.FlushCarts)
 			}
@@ -147,6 +147,8 @@ func RegisterAPIRoutes(router *gin.Engine) {
 			{
 				// 显示投票项，投票数
 				pollManage.GET("", ac.GetPoll)
+				// 获取分类项
+				pollManage.GET("/options", ac.GetCategory)
 				// 设置投票项
 				pollManage.POST("/create", ac.SetPoll)
 				// 删除投票项

@@ -107,11 +107,11 @@ func (book *Book) Update() error {
 // Category 图书类别模型
 type Category struct {
 	// 分类编号
-	CategoryID uint `json:"category_id" gorm:"column:category_id;primaryKey;autoIncrement"`
+	CategoryID uint `json:"category_id,omitempty" gorm:"column:category_id;primaryKey;autoIncrement"`
 	// 类别名
-	Name string `json:"name" gorm:"column:name"`
+	Name string `json:"name,omitempty" gorm:"column:name"`
 	// 对应图书
-	Books []Book `json:"books" gorm:"foreignKey:category_name;references:name"`
+	Books []Book `json:"books,omitempty" gorm:"foreignKey:category_name;references:name"`
 }
 
 // AddCategory 添加分类
@@ -125,6 +125,14 @@ func (book *Book) GetCategory() (Category, error) {
 	categoryModel := Category{}
 	err := mysql.DB.Model(&Category{}).Where("name = ?", book.CategoryName).
 		First(&categoryModel).Error
+	return categoryModel, err
+}
+
+// GetCategory 获取所有分类项
+func GetCategory() ([]Category, error) {
+	var categoryModel []Category
+	err := mysql.DB.Model(&Category{}).Select("name").
+		Find(&categoryModel).Error
 	return categoryModel, err
 }
 

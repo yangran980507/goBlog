@@ -2,6 +2,7 @@
 package admin
 
 import (
+	"blog/internal/server/models/book"
 	"blog/internal/server/models/poll"
 	"blog/internal/server/requests"
 	"blog/pkg/app"
@@ -52,6 +53,20 @@ func (ac *AdminController) GetPoll(c *gin.Context) {
 		WithResponse(gin.H{
 			"polls": polls,
 		})
+}
+
+// GetCategory 获取分类
+func (ac *AdminController) GetCategory(c *gin.Context) {
+
+	categories, err := book.GetCategory()
+	if err != nil {
+		logger.LogIf(err)
+		response.NewResponse(c, errcode.ErrServer).WithResponse("服务器错误")
+		return
+	}
+	response.NewResponse(c, errcode.ErrSuccess).WithResponse(gin.H{
+		"categories": categories,
+	})
 }
 
 // DeletePoll 删除投票项

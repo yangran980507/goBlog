@@ -113,7 +113,7 @@ func (uc *UserController) RemoveFromCarts(c *gin.Context) {
 	for _, v := range books.Books {
 		condition = append(condition, int64(v.ID))
 	}
-
+	fmt.Println(books)
 	fmt.Println(condition)
 	// 换取新的 购物车数据
 	cartModel.BookID = helps.GenerateNewSliceByDeleteOldSlice(cartModel.BookID, condition)
