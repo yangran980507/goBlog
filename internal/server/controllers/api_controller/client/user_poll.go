@@ -12,28 +12,19 @@ import (
 	"cmp"
 	"github.com/gin-gonic/gin"
 	"slices"
+	"time"
 )
 
 // IncrByPoll 投票
 func (uc *UserController) IncrByPoll(c *gin.Context) {
-	// 判断是否已操作
-	val, exist := c.Get("isExecute")
-	if exist {
-		if val.(bool) {
-			// 返回已投票成功消息
-			response.NewResponse(c, errcode.ErrSuccess, "已投票").
-				WithResponse()
-			return
-		}
-	}
 
 	// 绑定验证数据
 	request := requests.Poll{}
 	if err := c.ShouldBind(&request); err != nil {
 		// 绑定验证失败
 		logger.LogIf(err)
-		response.NewResponse(c, errcode.ErrBind, "投票失败").
-			WithResponse()
+		response.NewResponse(c, errcode.ErrBind).
+			WithResponse("投票失败")
 		return
 	}
 
@@ -43,21 +34,25 @@ func (uc *UserController) IncrByPoll(c *gin.Context) {
 	}
 
 	if !pollModel.IncrPoll() {
-		response.NewResponse(c, errcode.ErrServer, "投票失败").
-			WithResponse()
+		response.NewResponse(c, errcode.ErrServer).
+			WithResponse("投票失败")
 		return
 	}
 
 	// 获取当前 uid,action
 	uid := app.CurrentUser(c)
-	action := c.MustGet("action").(string)
 
 	// 存入操作记录
-	redis.EventRedis.HSetNX("users:"+uid, action, "execute")
+	if redis.EventRedis.HExists("Vote", uid) {
+		redis.EventRedis.HIncrBy("Vote", uid)
+	} else {
+		redis.EventRedis.HSetNX("Vote", uid, 1)
+		redis.EventRedis.HSetNX("Time", uid, time.Now().Unix())
+	}
 
 	// 返回投票成功消息
-	response.NewResponse(c, errcode.ErrSuccess, "投票成功").
-		WithResponse()
+	response.NewResponse(c, errcode.ErrSuccess).
+		WithResponse("投票成功")
 }
 
 // GetPoll 获取投票数

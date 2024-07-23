@@ -81,7 +81,7 @@ func RegisterAPIRoutes(router *gin.Engine) {
 			poll := client.Group("/polls")
 			{
 				// 投票
-				poll.PUT("/vote", middlewares.JWTAuth(), middlewares.ExecuteAuth("poll"), uc.IncrByPoll)
+				poll.PUT("/vote", middlewares.JWTAuth(), middlewares.ExecuteAuth(), uc.IncrByPoll)
 				// 显示投票结果
 				poll.GET("", uc.GetPoll)
 				// 显示投票项

@@ -33,7 +33,7 @@ func GetPoll() []Poll {
 	var sPoll []Poll
 	mPoll = redis.PollRedis.HGetAll("Poll")
 	for f, v := range mPoll {
-		time := redis.PollRedis.HGetTime(f)
+		time := redis.PollRedis.HGet("Time", f)
 		if time != "" {
 			timeInt, _ := strconv.Atoi(time)
 			vInt, _ := strconv.Atoi(v)
