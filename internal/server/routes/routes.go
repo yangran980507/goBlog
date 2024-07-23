@@ -83,9 +83,9 @@ func RegisterAPIRoutes(router *gin.Engine) {
 				// 投票
 				poll.PUT("/vote", middlewares.JWTAuth(), middlewares.ExecuteAuth("poll"), uc.IncrByPoll)
 				// 显示投票结果
-				poll.GET("", middlewares.JWTAuth(), uc.GetPoll)
+				poll.GET("", uc.GetPoll)
 				// 显示投票项
-				poll.GET("keys", uc.GetPollOption)
+				// poll.GET("keys", uc.GetPollOption)
 			}
 		}
 

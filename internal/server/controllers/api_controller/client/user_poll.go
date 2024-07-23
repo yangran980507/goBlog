@@ -9,7 +9,9 @@ import (
 	"blog/pkg/logger"
 	"blog/pkg/redis"
 	"blog/pkg/response"
+	"cmp"
 	"github.com/gin-gonic/gin"
+	"slices"
 )
 
 // IncrByPoll 投票
@@ -63,6 +65,14 @@ func (uc *UserController) GetPoll(c *gin.Context) {
 	// 读取票数
 	polls := poll.GetPoll()
 
+	if polls == nil {
+		response.NewResponse(c, errcode.ErrEmptyValue).
+			WithResponse("empty data")
+		return
+	}
+	slices.SortStableFunc(polls, func(a, b poll.Poll) int {
+		return cmp.Compare(a.Time, b.Time)
+	})
 	// 成功，返回成功信息
 	response.NewResponse(c, errcode.ErrSuccess).
 		WithResponse(gin.H{
@@ -71,6 +81,7 @@ func (uc *UserController) GetPoll(c *gin.Context) {
 }
 
 // GetPollOption 获取投票项
+/*
 func (uc *UserController) GetPollOption(c *gin.Context) {
 	// 读取投票项
 	polls := poll.GetPollOpts()
@@ -81,3 +92,4 @@ func (uc *UserController) GetPollOption(c *gin.Context) {
 			"pollKeys": polls,
 		})
 }
+*/

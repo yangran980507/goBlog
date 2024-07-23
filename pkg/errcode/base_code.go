@@ -67,6 +67,9 @@ const (
 
 	// ErrBooksQuantityDeficit (图书库存不足) / http.StatusOK / OK / 200
 	ErrBooksQuantityDeficit
+
+	// ErrPollHadExisted (投票项存在) / http.StatusOK / OK / 200
+	ErrPollHadExisted
 )
 
 func InitializeErrorCode() {
@@ -87,4 +90,5 @@ func InitializeErrorCode() {
 	Register(ErrBookHadExisted, 200, "Book Had Existed")
 	Register(ErrBookHadRemoved, 200, "Book Had Removed")
 	Register(ErrBooksQuantityDeficit, 200, "Books Quantity Deficit")
+	Register(ErrPollHadExisted, 200, "Poll Had Existed")
 }

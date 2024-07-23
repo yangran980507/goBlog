@@ -52,6 +52,7 @@ func (ac *AdminController) LoginAdmin(c *gin.Context) {
 			response.NewResponse(c, errcode.ErrSuccess, "登录成功！").WithResponse(
 				gin.H{
 					"token": token,
+					"user":  userModel,
 				})
 		}
 	}

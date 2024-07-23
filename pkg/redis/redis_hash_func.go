@@ -28,14 +28,14 @@ func (rds *RedisClient) HGetAll(key string) map[string]string {
 	return value
 }
 
-// GetKeys 获取 keys
-func (rds *RedisClient) GetKeys(key string) (keys []string) {
-	keys, err := rds.Client.HKeys(rds.Ctx, key).Result()
+// HGetTime 获取 time value
+func (rds *RedisClient) HGetTime(key string) (time string) {
+	time, err := rds.Client.HGet(rds.Ctx, "Time", key).Result()
 	if err != nil {
 		logger.LogIf(err)
-		return []string{}
+		return ""
 	}
-	return keys
+	return time
 }
 
 // HDel 删除 key 对应的 field

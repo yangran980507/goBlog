@@ -10,7 +10,6 @@ import (
 	"blog/pkg/logger"
 	"blog/pkg/response"
 	"errors"
-	"fmt"
 	"github.com/gin-gonic/gin"
 )
 
@@ -101,9 +100,8 @@ func (uc *UserController) LoginUser(c *gin.Context) {
 			response.NewResponse(c, errcode.ErrSuccess, "登录成功!").
 				WithResponse(
 					gin.H{
-						"user":   userModel,
-						"token":  token,
-						"userID": fmt.Sprintf("%v", userModel.ID),
+						"user":  userModel,
+						"token": token,
 					})
 		}
 	}

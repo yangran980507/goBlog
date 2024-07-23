@@ -9,7 +9,10 @@ import (
 	"blog/pkg/errcode"
 	"blog/pkg/logger"
 	"blog/pkg/response"
+	"cmp"
 	"github.com/gin-gonic/gin"
+	"slices"
+	"time"
 )
 
 // SetPoll 设置投票项
@@ -20,27 +23,28 @@ func (ac *AdminController) SetPoll(c *gin.Context) {
 	if err := c.ShouldBind(&request); err != nil {
 		// 绑定验证失败
 		logger.LogIf(err)
-		response.NewResponse(c, errcode.ErrBind, "添加失败").
-			WithResponse()
+		response.NewResponse(c, errcode.ErrBind).
+			WithResponse("添加失败")
 		return
 	}
 
 	// 投票模型实例
 	pollModel := &poll.Poll{
 		OptionName: request.OptionName,
+		Time:       time.Now().Unix(),
 	}
 
 	// 调用设置投票函数
 	if !pollModel.SetPoll() {
 		// 失败，返回失败信息
-		response.NewResponse(c, errcode.ErrServer, "添加失败").
-			WithResponse()
+		response.NewResponse(c, errcode.ErrPollHadExisted).
+			WithResponse("投票项已存在")
 		return
 	}
 
 	// 成功，返回成功信息
-	response.NewResponse(c, errcode.ErrSuccess, "添加成功").
-		WithResponse()
+	response.NewResponse(c, errcode.ErrSuccess).
+		WithResponse("添加成功")
 }
 
 // GetPoll 获取投票数
@@ -48,6 +52,14 @@ func (ac *AdminController) GetPoll(c *gin.Context) {
 	// 读取票数
 	polls := poll.GetPoll()
 
+	if polls == nil {
+		response.NewResponse(c, errcode.ErrEmptyValue).
+			WithResponse("empty data")
+		return
+	}
+	slices.SortStableFunc(polls, func(a, b poll.Poll) int {
+		return cmp.Compare(a.Time, b.Time)
+	})
 	// 成功，返回成功信息
 	response.NewResponse(c, errcode.ErrSuccess).
 		WithResponse(gin.H{
@@ -81,12 +93,12 @@ func (ac *AdminController) DeletePoll(c *gin.Context) {
 
 	if !pollModel.DeletePoll() {
 		// 失败，返回失败信息
-		response.NewResponse(c, errcode.ErrServer, "删除失败").
-			WithResponse()
+		response.NewResponse(c, errcode.ErrServer).
+			WithResponse("删除失败")
 		return
 	}
 	// 成功，返回成功信息
-	response.NewResponse(c, errcode.ErrSuccess, "删除成功").
-		WithResponse()
+	response.NewResponse(c, errcode.ErrSuccess).
+		WithResponse("删除成功")
 
 }
