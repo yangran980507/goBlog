@@ -88,7 +88,8 @@ func RegisterAPIRoutes(router *gin.Engine) {
 			poll := client.Group("/polls")
 			{
 				// 投票
-				poll.PUT("/vote", middlewares.JWTAuth(), middlewares.ExecuteAuth(), uc.IncrByPoll)
+				poll.PUT("/vote", middlewares.JWTAuth(),
+					middlewares.ExecuteAuth(), uc.IncrByPoll)
 				// 显示投票结果
 				poll.GET("", uc.GetPoll)
 				// 显示投票项
@@ -161,6 +162,15 @@ func RegisterAPIRoutes(router *gin.Engine) {
 				// 删除投票项
 				pollManage.DELETE("/:option_name/delete", ac.DeletePoll)
 
+			}
+
+			orderManage := admin.Group("/orders")
+			orderManage.Use(middlewares.JWTAuth(), middlewares.AdminAuth())
+			{
+				// 显示订单
+				orderManage.GET("", ac.GetOrders)
+				// 查看订单详细
+				orderManage.GET("/detail/:detailID", ac.ShowOrdersDetail)
 			}
 		}
 	}

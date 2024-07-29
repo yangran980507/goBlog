@@ -22,7 +22,7 @@ type Order struct {
 	// 联系电话
 	Phone string `json:"phone,omitempty" gorm:"not null"`
 	// 定单生效日期
-	Date int64 `json:"date,omitempty" gorm:"not null"`
+	Date int64 `json:"date" gorm:"not null"`
 	// 备注
 	Notes string `json:"notes,omitempty"`
 	// 是否执行

@@ -39,3 +39,10 @@ func OrdersDetailGet(id string) (orderDetail OrdersDetail) {
 
 	return
 }
+
+// OrdersGetAll 获取订单
+func OrdersGetAll() (orders []Order) {
+	mysql.DB.Model(Order{}).Omit("uid").Find(&orders)
+
+	return
+}
