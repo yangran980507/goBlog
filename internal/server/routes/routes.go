@@ -72,6 +72,8 @@ func RegisterAPIRoutes(router *gin.Engine) {
 				order.GET("", uc.ShowOrders)
 				// 查看订单详细
 				order.GET("/detail/:detailID", uc.ShowOrdersDetail)
+				// 订单取消
+				order.POST("/refund", uc.OrderRefund)
 
 			}
 

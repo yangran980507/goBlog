@@ -1,10 +1,12 @@
 // Package order 定单模型
 package order
 
+import "blog/pkg/mysql"
+
 // Order 订单
 type Order struct {
 	// 订单编号
-	ID uint `json:"-" gorm:"column:id;primaryKey;autoIncrement"`
+	ID uint `json:"id,omitempty" gorm:"column:id;primaryKey;autoIncrement"`
 	// 用户编号
 	Uid uint `json:"uid,omitempty" gorm:"column:uid;not null,index"`
 	// 真实姓名
@@ -39,4 +41,9 @@ type OrdersDetail struct {
 	BookID uint `json:"-"`
 	// 购买数量
 	BuyCount int `json:"buy_count,omitempty"`
+}
+
+func (order *Order) OrderChange() error {
+	return mysql.DB.Model(&order).Select("refund_explain").
+		Updates(Order{RefundExplain: order.RefundExplain}).Error
 }

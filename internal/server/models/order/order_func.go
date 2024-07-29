@@ -25,7 +25,7 @@ func OrdersCreate(orders []Order) (rows int64) {
 // OrdersGet 获取订单
 func OrdersGet(uid string) (orders []Order) {
 	mysql.DB.Model(Order{}).
-		Select([]string{"order_detail_id", "pay_way", "carry", "enforce",
+		Select([]string{"id", "order_detail_id", "pay_way", "carry", "enforce",
 			"date", "login_name", "refund", "refund_explain"}).
 		Where("uid = ?", uid).Find(&orders)
 

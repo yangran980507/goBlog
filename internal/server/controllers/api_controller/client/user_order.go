@@ -8,7 +8,9 @@ import (
 	"blog/internal/server/requests"
 	"blog/pkg/app"
 	"blog/pkg/errcode"
+	"blog/pkg/logger"
 	"blog/pkg/response"
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"strconv"
 	"time"
@@ -105,4 +107,34 @@ func (uc *UserController) ShowOrdersDetail(c *gin.Context) {
 			"book":       bookModel,
 		})
 	}
+}
+
+// OrderRefund 订单取消
+func (uc *UserController) OrderRefund(c *gin.Context) {
+	// 创建验证结构体空值实例
+	request := requests.OrderRefund{}
+	// 绑定结构数据到验证结构体中
+	err := c.ShouldBind(&request)
+	if err != nil {
+		response.NewResponse(c, errcode.ErrBind).WithResponse(err)
+		return
+	}
+
+	fmt.Println(request)
+	orderModel := &order.Order{
+		ID:            request.OrderID,
+		RefundExplain: request.RefundExplain,
+	}
+
+	err = orderModel.OrderChange()
+	if err != nil {
+		logger.LogIf(err)
+		response.NewResponse(c, errcode.ErrServer).
+			WithResponse("服务器错误，请稍后再试")
+		return
+	}
+
+	response.NewResponse(c, errcode.ErrSuccess).
+		WithResponse("请求已提交")
+
 }

@@ -32,6 +32,12 @@ type OrderValidation struct {
 	Books []Book `json:"books,omitempty"`
 }
 
+// OrderRefund 订单取消验证
+type OrderRefund struct {
+	OrderID       uint   `json:"order_id,omitempty"`
+	RefundExplain string `json:"refund_explain,omitempty"`
+}
+
 // OrderValidate 订单请求验证函数
 func OrderValidate(data interface{}) map[string][]string {
 
