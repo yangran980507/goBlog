@@ -12,8 +12,6 @@ import (
 type Cart struct {
 	// 购物车中的图书
 	BookID []int64 `json:"book_id"`
-	// 购物车更新时间
-	UpdateTime int64 `json:"update_time"`
 }
 
 // SetCart 购物车入库

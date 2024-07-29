@@ -66,7 +66,12 @@ func RegisterAPIRoutes(router *gin.Engine) {
 			order := client.Group("/orders")
 			order.Use(middlewares.JWTAuth())
 			{
+				// 提交订单
 				order.POST("/submit", uc.OrdersSubmit)
+				// 查看订单
+				order.GET("", uc.ShowOrders)
+				// 查看订单详细
+				order.GET("/detail/:detailID", uc.ShowOrdersDetail)
 
 			}
 

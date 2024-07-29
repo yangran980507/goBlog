@@ -1,14 +1,14 @@
 // Package order 定单模型
 package order
 
-import "blog/pkg/mysql"
-
 // Order 订单
 type Order struct {
 	// 订单编号
 	ID uint `json:"-" gorm:"column:id;primaryKey;autoIncrement"`
 	// 用户编号
-	Uid uint `json:"uid"`
+	Uid uint `json:"uid,omitempty" gorm:"column:uid;not null,index"`
+	// 真实姓名
+	LoginName string `json:"login_name,omitempty" gorm:"column:login_name;not null"`
 	// 对应订单明细编号
 	OrderDetailID uint `json:"order_detail_id"`
 	// 付款方式
@@ -24,9 +24,9 @@ type Order struct {
 	// 备注
 	Notes string `json:"notes,omitempty"`
 	// 是否执行
-	Enforce bool `json:"enforce,omitempty" `
+	Enforce string `json:"enforce,omitempty" `
 	// 退款
-	Refund bool `json:"refund,omitempty" `
+	Refund bool `json:"refund" `
 	// 退款说明
 	RefundExplain string `json:"refund_explain"`
 }
@@ -39,22 +39,4 @@ type OrdersDetail struct {
 	BookID uint `json:"-"`
 	// 购买数量
 	BuyCount int `json:"buy_count,omitempty"`
-}
-
-// OrdersDetailCreate 订单明细创建
-func OrdersDetailCreate(bookMap []OrdersDetail) (orderDetailsID []uint) {
-	mysql.DB.Create(&bookMap)
-
-	for _, v := range bookMap {
-		orderDetailsID = append(orderDetailsID, v.ID)
-	}
-
-	return
-}
-
-// OrdersCreate 订单明细创建
-func OrdersCreate(orders []Order) (rows int64) {
-
-	return mysql.DB.Create(&orders).RowsAffected
-
 }

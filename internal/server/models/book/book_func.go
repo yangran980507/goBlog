@@ -20,11 +20,20 @@ func IsBookSufficient(id uint, amount int) (string, bool) {
 	return book.BookName, true
 }
 
+// GetByID ID获取
+func GetByID(id uint) (bookModel Book, row int64) {
+	result := mysql.DB.Model(Book{}).
+		Select([]string{"book_name", "category_name",
+			"publisher", "author", "price", "pdate", "pic_url"}).
+		Where("id = ?", id).First(&bookModel)
+	return bookModel, result.RowsAffected
+}
+
 // GetByName 书名获取
 func GetByName(name string) (bookModel Book, row int64) {
 	result := mysql.DB.Model(Book{}).
 		Select([]string{"id", "book_name", "category_name",
-			"publisher", "author", "introduce", "price", "pdate", "pic_url"}).
+			"publisher", "author", "introduce", "price", "pdate", "pic_url", "quantity"}).
 		Where("book_name = ?", name).First(&bookModel)
 	return bookModel, result.RowsAffected
 }
@@ -92,7 +101,7 @@ func GetBooksBySlice(ids []int64) ([]Book, int64) {
 	var books []Book
 	// 按给出切片顺序排序查询
 	row := mysql.DB.Model(Book{}).
-		Select([]string{"id", "book_name", "price", "pic_url", "publisher", "author"}).
+		Select([]string{"id", "book_name", "price", "pic_url", "publisher", "author", "quantity"}).
 		Where(ids).Clauses(clause.OrderBy{
 		Expression: clause.Expr{SQL: "FIELD(id,?)",
 			Vars: []interface{}{ids}, WithoutParentheses: true},

@@ -8,9 +8,7 @@ import (
 	"blog/pkg/errcode"
 	"blog/pkg/helps"
 	"blog/pkg/response"
-	"fmt"
 	"github.com/gin-gonic/gin"
-	"time"
 )
 
 // ShowCarts 显示购物车信息
@@ -76,8 +74,6 @@ func (uc *UserController) AddIntoCarts(c *gin.Context) {
 		// 图书切片中添加 book
 		cartModel.BookID = append(cartModel.BookID, bookID)
 	}
-	// 添加更新时间
-	cartModel.UpdateTime = time.Now().Unix()
 
 	// 重新存入
 	if !cartModel.SetCart(uid) {
@@ -97,34 +93,17 @@ func (uc *UserController) RemoveFromCarts(c *gin.Context) {
 	// 获取当前用户 id
 	uid := app.CurrentUser(c)
 
-	// 获取购物车信息
-	cartModel := cart.GetCart(uid)
-
 	// 获取请求删除的图书切片
-	var books book.Carts
+	var books cart.Cart
 	err := c.ShouldBind(&books)
 	if err != nil {
 		response.NewResponse(c, errcode.ErrBind).WithResponse("删除失败")
 		return
 	}
 
-	// 获取请求删除的 ID 切片
-	condition := make([]int64, 0)
-	for _, v := range books.Books {
-		condition = append(condition, int64(v.ID))
-	}
-	fmt.Println(books)
-	fmt.Println(condition)
-	// 换取新的 购物车数据
-	cartModel.BookID = helps.GenerateNewSliceByDeleteOldSlice(cartModel.BookID, condition)
-
-	fmt.Println(cartModel.BookID)
-
-	// 删除对应的购物车位号
-	cartModel.UpdateTime = time.Now().Unix()
-
+	result, length := cart.ReplaceCart(uid, books.BookID)
 	// 重新存入
-	if !cartModel.SetCart(uid) {
+	if !result {
 		// 失败返回失败信息
 		response.NewResponse(c, errcode.ErrServer).
 			WithResponse("删除失败，请稍后重试")
@@ -134,7 +113,7 @@ func (uc *UserController) RemoveFromCarts(c *gin.Context) {
 	// 删除成功
 	response.NewResponse(c, errcode.ErrSuccess, "删除成功").
 		WithResponse(gin.H{
-			"bookLength": len(cartModel.BookID),
+			"bookLength": length,
 		})
 }
 

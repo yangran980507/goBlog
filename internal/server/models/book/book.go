@@ -5,11 +5,6 @@ import (
 	"blog/pkg/mysql"
 )
 
-// Carts 接受切片请求 JSON
-type Carts struct {
-	Books []Book `json:"books"`
-}
-
 // Book 图书模型
 type Book struct {
 	// 图书编号
@@ -29,7 +24,7 @@ type Book struct {
 	// 价格
 	Price float64 `json:"price,omitempty"`
 	// 出版日期
-	Pdate int64 `json:"pdate,omitempty"`
+	Pdate int64 `json:"pdate"`
 	// 封面路径
 	PicURL string `json:"pic_url,omitempty"`
 	// 入库时间
