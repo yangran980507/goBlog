@@ -2,6 +2,7 @@
 package book
 
 import (
+	"blog/internal/server/models/order"
 	"blog/pkg/mysql"
 	"blog/pkg/paginator"
 	"github.com/gin-gonic/gin"
@@ -133,4 +134,13 @@ func GetCategories() ([]Category, int64) {
 			Select([]string{"id", "category_name", "book_name", "publisher"})
 	}).Order("category_id asc").Find(&categories).RowsAffected
 	return categories, row
+}
+
+// ChangeQuantityAndSold 修改库存销量
+func ChangeQuantityAndSold(detailModel order.OrdersDetail) {
+	mysql.DB.Model(Book{}).Where("id = ?", detailModel.BookID).Select("quantity", "sold").
+		Updates(map[string]interface{}{
+			"quantity": gorm.Expr("quantity - ?", 1),
+			"sold":     gorm.Expr("sold + ?", 1),
+		})
 }

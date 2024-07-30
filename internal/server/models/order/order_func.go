@@ -26,7 +26,7 @@ func OrdersCreate(orders []Order) (rows int64) {
 func OrdersGet(uid string) (orders []Order) {
 	mysql.DB.Model(Order{}).
 		Select([]string{"id", "order_detail_id", "pay_way", "carry", "enforce",
-			"date", "login_name", "refund_explain"}).
+			"date", "login_name", "refund_explain"}).Order("id desc").
 		Where("uid = ?", uid).Find(&orders)
 
 	return

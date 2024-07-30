@@ -82,4 +82,17 @@ func (ac *AdminController) OrderExecute(c *gin.Context) {
 	response.NewResponse(c, errcode.ErrSuccess).
 		WithResponse("状态已修改")
 
+	var (
+		detailModel order.OrdersDetail
+	)
+
+	if orderModel.OrderIsExecute() {
+		// 订单为已执行状态
+		// 查询此刻的图书 ID
+		orderModel.ExecutedOrderDetail(&detailModel)
+
+		// 修改图书销量和库存
+		book.ChangeQuantityAndSold(detailModel)
+	}
+
 }

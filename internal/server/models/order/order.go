@@ -55,3 +55,17 @@ func (order *Order) AdminOrderChange() error {
 	return mysql.DB.Model(&order).Select("enforce").
 		Updates(Order{Enforce: order.Enforce}).Error
 }
+
+// OrderIsExecute 订单是否已执行
+func (order *Order) OrderIsExecute() bool {
+	return mysql.DB.Model(Order{}).
+		Where("id = ? AND enforce = ?", order.ID, order.Enforce).First(order).
+		RowsAffected > 0
+}
+
+// ExecutedOrderDetail 执行过的订单明细订单是否已执行
+func (order *Order) ExecutedOrderDetail(detailModel *OrdersDetail) {
+	mysql.DB.Model(OrdersDetail{}).
+		Where("id = ?", order.OrderDetailID).
+		First(detailModel)
+}
