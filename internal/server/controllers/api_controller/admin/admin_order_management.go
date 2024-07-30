@@ -4,8 +4,11 @@ package admin
 import (
 	"blog/internal/server/models/book"
 	"blog/internal/server/models/order"
+	"blog/internal/server/requests"
 	"blog/pkg/errcode"
+	"blog/pkg/logger"
 	"blog/pkg/response"
+	"errors"
 	"github.com/gin-gonic/gin"
 )
 
@@ -44,4 +47,39 @@ func (ac *AdminController) ShowOrdersDetail(c *gin.Context) {
 			"book":       bookModel,
 		})
 	}
+}
+
+// OrderExecute 订单执行
+func (ac *AdminController) OrderExecute(c *gin.Context) {
+	// 创建验证结构体空值实例
+	request := requests.OrderExecute{}
+	// 绑定结构数据到验证结构体中
+	err := c.ShouldBind(&request)
+	if err != nil {
+		logger.LogIf(err)
+		response.NewResponse(c, errcode.ErrBind).WithResponse(err)
+		return
+	}
+
+	orderModel := &order.Order{
+		ID:      request.OrderID,
+		Enforce: request.Enforce,
+	}
+
+	err = orderModel.AdminOrderChange()
+	if err != nil {
+		if errors.Is(err, errcode.ErrOrderHadExecuted) {
+			response.NewResponse(c, errcode.ErrOrderHadExecuted).
+				WithResponse(errcode.ErrOrderHadExecuted.Error())
+			return
+		}
+		logger.LogIf(err)
+		response.NewResponse(c, errcode.ErrServer).
+			WithResponse("服务器错误，请稍后再试")
+		return
+	}
+
+	response.NewResponse(c, errcode.ErrSuccess).
+		WithResponse("状态已修改")
+
 }

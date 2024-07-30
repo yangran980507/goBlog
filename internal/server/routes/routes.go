@@ -67,13 +67,13 @@ func RegisterAPIRoutes(router *gin.Engine) {
 			order.Use(middlewares.JWTAuth())
 			{
 				// 提交订单
-				order.POST("/submit", uc.OrdersSubmit)
+				order.POST("/submit", middlewares.FreezeAuth(), uc.OrdersSubmit)
 				// 查看订单
 				order.GET("", uc.ShowOrders)
 				// 查看订单详细
 				order.GET("/detail/:detailID", uc.ShowOrdersDetail)
 				// 订单取消
-				order.POST("/refund", uc.OrderRefund)
+				order.POST("/refund", middlewares.FreezeAuth(), uc.OrderRefund)
 
 			}
 
@@ -92,8 +92,6 @@ func RegisterAPIRoutes(router *gin.Engine) {
 					middlewares.ExecuteAuth(), uc.IncrByPoll)
 				// 显示投票结果
 				poll.GET("", uc.GetPoll)
-				// 显示投票项
-				// poll.GET("keys", uc.GetPollOption)
 			}
 		}
 
@@ -150,6 +148,7 @@ func RegisterAPIRoutes(router *gin.Engine) {
 				noticeManage.DELETE("/delete/:id", ac.NoticeDelete)
 			}
 
+			// 投票管理路由组
 			pollManage := admin.Group("/polls")
 			pollManage.Use(middlewares.JWTAuth(), middlewares.AdminAuth())
 			{
@@ -164,6 +163,7 @@ func RegisterAPIRoutes(router *gin.Engine) {
 
 			}
 
+			// 订单管理路由组
 			orderManage := admin.Group("/orders")
 			orderManage.Use(middlewares.JWTAuth(), middlewares.AdminAuth())
 			{
@@ -171,6 +171,8 @@ func RegisterAPIRoutes(router *gin.Engine) {
 				orderManage.GET("", ac.GetOrders)
 				// 查看订单详细
 				orderManage.GET("/detail/:detailID", ac.ShowOrdersDetail)
+				// 订单执行
+				orderManage.POST("/execute", ac.OrderExecute)
 			}
 		}
 	}

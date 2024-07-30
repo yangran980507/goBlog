@@ -23,7 +23,7 @@ func IsBookSufficient(id uint, amount int) (string, bool) {
 // GetByID ID获取
 func GetByID(id uint) (bookModel Book, row int64) {
 	result := mysql.DB.Model(Book{}).
-		Select([]string{"book_name", "category_name",
+		Select([]string{"book_name", "book_number", "category_name",
 			"publisher", "author", "price", "pdate", "pic_url"}).
 		Where("id = ?", id).First(&bookModel)
 	return bookModel, result.RowsAffected

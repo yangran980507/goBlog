@@ -49,11 +49,14 @@ const (
 
 	// ErrPassWord (密码错误) / http.StatusNotFound / Authorization Failed / 401
 	ErrPassWord
+
+	// ErrFrozen (用户冻结) / http.StatusUnauthorized / Authorization Failed / 401
+	ErrFrozen
 )
 
 // 用户业务模块错误
 const (
-	// ErrEmptyValue (空购物车) / http.StatusOK / OK / 200
+	// ErrEmptyValue (空数据库) / http.StatusOK / OK / 200
 	ErrEmptyValue CodeInt = iota + 100201
 
 	// ErrOverMaxCount (超过购物车最大存量) / http.StatusOK / OK / 200
@@ -70,6 +73,9 @@ const (
 
 	// ErrPollHadExisted (投票项存在) / http.StatusOK / OK / 200
 	ErrPollHadExisted
+
+	// ErrOrderHadExecuted (订单已执行) / http.StatusOK / OK / 200
+	ErrOrderHadExecuted
 )
 
 func InitializeErrorCode() {
@@ -91,4 +97,6 @@ func InitializeErrorCode() {
 	Register(ErrBookHadRemoved, 200, "Book Had Removed")
 	Register(ErrBooksQuantityDeficit, 200, "Books Quantity Deficit")
 	Register(ErrPollHadExisted, 200, "Poll Had Existed")
+	Register(ErrOrderHadExecuted, 200, "Order Had Executed")
+	Register(ErrFrozen, 401, "User Had Frozen")
 }

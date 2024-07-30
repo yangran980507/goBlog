@@ -28,7 +28,7 @@ type Order struct {
 	// 是否执行
 	Enforce string `json:"enforce,omitempty" `
 	// 退款
-	Refund bool `json:"refund" `
+	ExecTime int64 `json:"exec_time,omitempty" `
 	// 退款说明
 	RefundExplain string `json:"refund_explain"`
 }
@@ -43,7 +43,15 @@ type OrdersDetail struct {
 	BuyCount int `json:"buy_count,omitempty"`
 }
 
-func (order *Order) OrderChange() error {
-	return mysql.DB.Model(&order).Select("refund_explain").
-		Updates(Order{RefundExplain: order.RefundExplain}).Error
+// UserOrderChange 修改订单状态
+func (order *Order) UserOrderChange() error {
+	return mysql.DB.Model(&order).Select("refund_explain", "enforce", "exec_time").
+		Updates(Order{RefundExplain: order.RefundExplain,
+			Enforce: order.Enforce, ExecTime: order.ExecTime}).Error
+}
+
+// AdminOrderChange 修改订单状态
+func (order *Order) AdminOrderChange() error {
+	return mysql.DB.Model(&order).Select("enforce").
+		Updates(Order{Enforce: order.Enforce}).Error
 }

@@ -10,7 +10,7 @@ import (
 	"blog/pkg/errcode"
 	"blog/pkg/logger"
 	"blog/pkg/response"
-	"fmt"
+	"errors"
 	"github.com/gin-gonic/gin"
 	"strconv"
 	"time"
@@ -56,6 +56,7 @@ func (uc *UserController) OrdersSubmit(c *gin.Context) {
 			Date:          time.Now().Unix(),
 			Notes:         request.Notes,
 			Enforce:       "已提交",
+			ExecTime:      time.Now().Unix(),
 		})
 	}
 
@@ -120,14 +121,20 @@ func (uc *UserController) OrderRefund(c *gin.Context) {
 		return
 	}
 
-	fmt.Println(request)
 	orderModel := &order.Order{
 		ID:            request.OrderID,
 		RefundExplain: request.RefundExplain,
+		Enforce:       "申请取消",
+		ExecTime:      time.Now().Unix(),
 	}
 
-	err = orderModel.OrderChange()
+	err = orderModel.UserOrderChange()
 	if err != nil {
+		if errors.Is(err, errcode.ErrOrderHadExecuted) {
+			response.NewResponse(c, errcode.ErrOrderHadExecuted).
+				WithResponse(errcode.ErrOrderHadExecuted.Error())
+			return
+		}
 		logger.LogIf(err)
 		response.NewResponse(c, errcode.ErrServer).
 			WithResponse("服务器错误，请稍后再试")
