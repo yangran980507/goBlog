@@ -11,25 +11,25 @@ type User struct {
 	// 用户编号
 	ID uint `json:"id,omitempty" gorm:"column:id;primaryKey;autoIncrement"`
 	// 登陆名
-	LoginName string `json:"login_name,omitempty" gorm:"index"`
+	LoginName string `json:"login_name" gorm:"index"`
 	// 真实名
-	TrueName string `json:"true_name,omitempty"`
+	TrueName string `json:"true_name"`
 	// 密码
 	PassWord string `json:"-"`
 	// 地址
-	Address string `json:"address,omitempty"`
+	Address string `json:"address"`
 	// 邮编
-	PostCode string `json:"post_code,omitempty"`
+	PostCode string `json:"post_code"`
 	// 电话号码
-	Phone string `json:"phone,omitempty"`
+	Phone string `json:"phone"`
 	// 账号是否可用
-	Freeze bool `json:"freeze,omitempty"`
+	Freeze bool `json:"freeze"`
 	// 用户身份 1：用户；2：管理
 	IsManager bool `json:"-"`
 	// 折扣等
-	Grade int `json:"grade,omitempty"`
+	Grade int `json:"grade"`
 	// 消费金额
-	Amount float64 `json:"amount,omitempty"`
+	float64 `json:"amount"`
 }
 
 // Create 增加数据

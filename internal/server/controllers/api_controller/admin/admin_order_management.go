@@ -4,6 +4,7 @@ package admin
 import (
 	"blog/internal/server/models/book"
 	"blog/internal/server/models/order"
+	"blog/internal/server/models/user"
 	"blog/internal/server/requests"
 	"blog/pkg/errcode"
 	"blog/pkg/logger"
@@ -62,8 +63,9 @@ func (ac *AdminController) OrderExecute(c *gin.Context) {
 	}
 
 	orderModel := &order.Order{
-		ID:      request.OrderID,
-		Enforce: request.Enforce,
+		ID:        request.OrderID,
+		LoginName: request.LoginName,
+		Enforce:   request.Enforce,
 	}
 
 	err = orderModel.AdminOrderChange()
@@ -82,9 +84,7 @@ func (ac *AdminController) OrderExecute(c *gin.Context) {
 	response.NewResponse(c, errcode.ErrSuccess).
 		WithResponse("状态已修改")
 
-	var (
-		detailModel order.OrdersDetail
-	)
+	var detailModel order.OrdersDetail
 
 	if orderModel.OrderIsExecute() {
 		// 订单为已执行状态
@@ -92,7 +92,11 @@ func (ac *AdminController) OrderExecute(c *gin.Context) {
 		orderModel.ExecutedOrderDetail(&detailModel)
 
 		// 修改图书销量和库存
-		book.ChangeQuantityAndSold(detailModel)
+		bookModel := book.ChangeQuantityAndSold(detailModel)
+
+		// 修改用户消费金额
+		user.ChangeAmount(orderModel, bookModel, detailModel)
+
 	}
 
 }

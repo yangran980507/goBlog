@@ -2,6 +2,8 @@
 package user
 
 import (
+	"blog/internal/server/models/book"
+	"blog/internal/server/models/order"
 	"blog/pkg/mysql"
 	"blog/pkg/paginator"
 	"github.com/gin-gonic/gin"
@@ -21,16 +23,6 @@ func GetUserInfo(loginName string) (userModel User) {
 	return
 }
 
-// GetUsers 获取所有用户
-func GetUsers() ([]User, error) {
-	users := make([]User, 6)
-	if err := mysql.DB.Model(User{}).Where("is_manager = ?", false).
-		Order("id asc").Find(&users).Error; err != nil {
-		return nil, err
-	}
-	return users, nil
-}
-
 // Paginate 查询数据并进行分页
 func Paginate(c *gin.Context, count string) (users []User, page paginator.Page) {
 	page = paginator.Paginate(
@@ -45,4 +37,12 @@ func Paginate(c *gin.Context, count string) (users []User, page paginator.Page) 
 		"asc")
 
 	return
+}
+
+// ChangeAmount 修改消费值
+func ChangeAmount(orderModel *order.Order, bookModel book.Book, detailModel order.OrdersDetail) {
+	var count = bookModel.Price * float64(detailModel.BuyCount)
+	mysql.DB.Model(User{}).Where("login_name = ?", orderModel.LoginName).
+		Select("amount").
+		Update("amount += ?", count)
 }

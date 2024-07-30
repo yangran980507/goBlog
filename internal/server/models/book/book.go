@@ -34,9 +34,9 @@ type Book struct {
 	// 是否推荐 ？
 	IsCommended bool `json:"is_commended,omitempty"`
 	// 库存
-	Quantity int `json:"quantity,omitempty"`
+	Quantity int `json:"quantity"`
 	// 已售
-	Sold int `json:"sold,omitempty"`
+	Sold int `json:"sold"`
 }
 
 // Create 创建图书

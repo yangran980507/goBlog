@@ -137,10 +137,13 @@ func GetCategories() ([]Category, int64) {
 }
 
 // ChangeQuantityAndSold 修改库存销量
-func ChangeQuantityAndSold(detailModel order.OrdersDetail) {
+func ChangeQuantityAndSold(detailModel order.OrdersDetail) (bookModel Book) {
 	mysql.DB.Model(Book{}).Where("id = ?", detailModel.BookID).Select("quantity", "sold").
 		Updates(map[string]interface{}{
-			"quantity": gorm.Expr("quantity - ?", 1),
-			"sold":     gorm.Expr("sold + ?", 1),
+			"quantity": gorm.Expr("quantity - ?", detailModel.BuyCount),
+			"sold":     gorm.Expr("sold + ?", detailModel.BuyCount),
 		})
+
+	mysql.DB.Model(Book{}).Where("id = ?", detailModel.BookID).First(&bookModel)
+	return
 }
