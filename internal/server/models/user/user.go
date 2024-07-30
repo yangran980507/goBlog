@@ -29,7 +29,7 @@ type User struct {
 	// 折扣等
 	Grade int `json:"grade"`
 	// 消费金额
-	float64 `json:"amount"`
+	Amount float64 `json:"amount"`
 }
 
 // Create 增加数据

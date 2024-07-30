@@ -59,7 +59,7 @@ func (order *Order) AdminOrderChange() error {
 // OrderIsExecute 订单是否已执行
 func (order *Order) OrderIsExecute() bool {
 	return mysql.DB.Model(Order{}).
-		Where("id = ? AND enforce = ?", order.ID, order.Enforce).First(order).
+		Where("id = ? AND enforce = ?", order.ID, order.Enforce).First(&order).
 		RowsAffected > 0
 }
 
@@ -67,5 +67,5 @@ func (order *Order) OrderIsExecute() bool {
 func (order *Order) ExecutedOrderDetail(detailModel *OrdersDetail) {
 	mysql.DB.Model(OrdersDetail{}).
 		Where("id = ?", order.OrderDetailID).
-		First(detailModel)
+		First(&detailModel)
 }

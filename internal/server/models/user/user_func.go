@@ -7,6 +7,7 @@ import (
 	"blog/pkg/mysql"
 	"blog/pkg/paginator"
 	"github.com/gin-gonic/gin"
+	"gorm.io/gorm"
 )
 
 // IsUserExist 判断 user 是否存在于数据库中
@@ -40,9 +41,9 @@ func Paginate(c *gin.Context, count string) (users []User, page paginator.Page) 
 }
 
 // ChangeAmount 修改消费值
-func ChangeAmount(orderModel *order.Order, bookModel book.Book, detailModel order.OrdersDetail) {
+func ChangeAmount(orderModel *order.Order, bookModel *book.Book, detailModel *order.OrdersDetail) {
 	var count = bookModel.Price * float64(detailModel.BuyCount)
-	mysql.DB.Model(User{}).Where("login_name = ?", orderModel.LoginName).
+	mysql.DB.Model(User{}).Where("id = ?", orderModel.Uid).
 		Select("amount").
-		Update("amount += ?", count)
+		Update("amount", gorm.Expr("amount + ?", count))
 }

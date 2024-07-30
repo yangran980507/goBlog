@@ -63,9 +63,8 @@ func (ac *AdminController) OrderExecute(c *gin.Context) {
 	}
 
 	orderModel := &order.Order{
-		ID:        request.OrderID,
-		LoginName: request.LoginName,
-		Enforce:   request.Enforce,
+		ID:      request.OrderID,
+		Enforce: request.Enforce,
 	}
 
 	err = orderModel.AdminOrderChange()
@@ -95,7 +94,7 @@ func (ac *AdminController) OrderExecute(c *gin.Context) {
 		bookModel := book.ChangeQuantityAndSold(detailModel)
 
 		// 修改用户消费金额
-		user.ChangeAmount(orderModel, bookModel, detailModel)
+		user.ChangeAmount(orderModel, &bookModel, &detailModel)
 
 	}
 

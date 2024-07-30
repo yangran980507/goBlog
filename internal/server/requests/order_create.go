@@ -40,9 +40,8 @@ type OrderRefund struct {
 
 // OrderExecute 订单执行验证
 type OrderExecute struct {
-	OrderID   uint   `json:"order_id,omitempty"`
-	LoginName string `json:"login_name,omitempty" form:"login_name" binding:"required"`
-	Enforce   string `json:"enforce,omitempty" form:"enforce" binding:"required"`
+	OrderID uint   `json:"order_id,omitempty"`
+	Enforce string `json:"enforce,omitempty" form:"enforce" binding:"required"`
 }
 
 // OrderValidate 订单请求验证函数
