@@ -68,6 +68,8 @@ func RegisterAPIRoutes(router *gin.Engine) {
 			{
 				// 提交订单
 				order.POST("/submit", middlewares.FreezeAuth(), uc.OrdersSubmit)
+				// 直接购买
+				order.POST("/direct-submit", middlewares.FreezeAuth(), uc.OrdersDirectSubmit)
 				// 查看订单
 				order.GET("", uc.ShowOrders)
 				// 查看订单详细

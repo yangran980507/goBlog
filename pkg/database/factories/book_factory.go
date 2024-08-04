@@ -5,7 +5,6 @@ import (
 	"blog/internal/server/models/book"
 	"blog/pkg/helps"
 	"github.com/bxcodec/faker/v3"
-	"strconv"
 	"time"
 )
 
@@ -16,23 +15,21 @@ func MakeBooks(count int) []book.Book {
 	// 设定唯一值
 	faker.SetGenerateUniqueValues(true)
 
-	nums, _ := strconv.Atoi(helps.RandomNumber(2))
-
 	for i := 0; i < count; i++ {
 		model := book.Book{
 			BookNumber:   faker.Phonenumber(),
-			BookName:     faker.Name(),
-			CategoryName: "类别9",
-			Publisher:    faker.Name(),
-			Author:       faker.Username(),
+			BookName:     faker.Word(),
+			CategoryName: "类别" + helps.RandomNumber(1),
+			Publisher:    helps.RandomPublisher(),
+			Author:       faker.ChineseName(),
 			Introduce:    faker.Paragraph(),
-			Price:        float64(nums),
-			Pdate:        time.Now().Unix(),
-			PicURL:       faker.Name(),
+			Price:        helps.RandomPrice(),
+			Pdate:        faker.UnixTime(),
+			PicURL:       "0" + helps.RandomNumber(2) + ".jpg",
 			InTime:       time.Now().Unix(),
 			IsNewBook:    true,
 			IsCommended:  true,
-			Quantity:     nums,
+			Quantity:     helps.RandomQuantity(),
 		}
 
 		objs = append(objs, model)

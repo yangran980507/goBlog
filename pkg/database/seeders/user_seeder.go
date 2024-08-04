@@ -12,7 +12,7 @@ import (
 func init() {
 	seed.Add("SeedUsersTable", func(db *gorm.DB) {
 
-		users := factories.MakeUsers(10)
+		users := factories.MakeUsers(100)
 
 		result := db.Table("users").Create(&users)
 

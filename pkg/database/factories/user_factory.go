@@ -17,9 +17,10 @@ func MakeUsers(time int) []user.User {
 	for i := 0; i < time; i++ {
 		model := user.User{
 			LoginName: faker.Username(),
-			TrueName:  faker.Name(),
-			PassWord:  "$2a$14$oPzVkIdwJ8KqY0erYAYQxOuAAlbI/sFIsH0C0R4MPc.3JbWWSuaUe",
+			TrueName:  faker.ChineseName(),
+			PassWord:  faker.Password(),
 			Phone:     helps.RandomNumber(11),
+			Address:   faker.Sentence(),
 		}
 
 		objs = append(objs, model)

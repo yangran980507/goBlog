@@ -48,7 +48,7 @@ func RunAll() {
 	for _, name := range orderedSeederNames {
 		sdr := GetSeeder(name)
 		if len(sdr.Name) > 0 {
-			console.Warn("Running Odered Seeder: " + sdr.Name)
+			console.Warn("Running Ordered Seeder: " + sdr.Name)
 			sdr.Func(mysql.DB)
 			executed[name] = name
 
